@@ -1,4 +1,4 @@
-# P02 — Design system: neumorphism tokens, light/dark, responsive, component gallery   [ACTIVE]
+# P02 — Design system: neumorphism tokens, light/dark, responsive, component gallery   [DONE]
 
 Working method (DECISIONS Q15): Claude writes all files; the owner runs commands only via `.\run.cmd <script>.ps1`;
 Claude reads `logs\last-run.txt`. Folder has spaces: always quote paths.
@@ -57,9 +57,9 @@ overlap / sideways scrolling. Later phases only compose these components, never 
       Incognito. For widths 360, 768 and 1280 (F12 > device toolbar) and for Light + Dark: press "Run layout check" (must say OK)
       and send ONE screenshot per theme at 360. Claude reviews the screenshots for overlap/mismatch and fixes what is found.
 - [x] T12 Final run: `.\run.cmd build.ps1` exit 0 (includes `npm run check`); JS stays <= 250 KB gzip; exactly one folder in `builds\`.
-- [ ] T13 Cleanup (AGENTS.md "Phase end checklist") and commit through a script `scripts/p02-commit.ps1`
+- [x] T13 Cleanup (AGENTS.md "Phase end checklist") and commit through a script `scripts/p02-commit.ps1`
       (message `P02: design system, themes, gallery`).
-- [ ] T14 Update `PROGRESS.md` (P02 DONE, P03 ACTIVE), write `docs/done/P02-summary.md` (5 lines), create the detailed `P03` file
+- [x] T14 Update `PROGRESS.md` (P02 DONE, P03 ACTIVE), write `docs/done/P02-summary.md` (5 lines), create the detailed `P03` file
       (content model: course/block/test schema, manifest, stable IDs, sample course, local DB with Dexie), tell the owner in Gujarati.
 
 ## Acceptance (all must be true)
@@ -94,3 +94,5 @@ overlap / sideways scrolling. Later phases only compose these components, never 
 - 2026-11-18 Claude: T11 done: owner sent 3 DARK screenshots (widths 400, 974, 1366); layout check OK in all three; no overlap, text readable, nav fine. With the earlier 3 LIGHT runs, both themes are checked at 3 widths (400/974/1366 instead of exactly 360/768/1280; the layout check scans the whole page, so lower sections are covered for overlap/sideways scroll). Not yet seen by eye: lower gallery sections, reload persistence and no white flash in dark (acceptance #4). Next: T12 (owner runs `.\run.cmd build.ps1`).
 - 2026-11-18 Claude: T12 done: build.ps1 exit 0 (typecheck, boundaries 42 files, lint, 52 tests pass); JS 105.39 kB gzip (limit 250); CSS 2.16 kB gzip; PWA precache 7 entries; builds\ has exactly one folder (web-0.1.0-20261118-1043). Owner also confirmed dark theme persists after reload with no white flash (acceptance #4). Next: T13 (cleanup + scripts/p02-commit.ps1).
 - 2026-11-18 Claude: T13 script written, NOT yet run: scripts/p02-commit.ps1 (gitignore check, console.log/debugger scan of src, builds\ count, commit `P02: design system, themes, gallery`). Manual cleanup review: src tree has no stray/temp files; the only console call is the intentional console.error in boot.ts. Next: owner runs `.\run.cmd p02-commit.ps1`; if exit 0, tick T13 and do T14.
+- 2026-11-18 Claude: T13 done: p02-commit.ps1 exit 0, commit 714719d `P02: design system, themes, gallery` (56 files; only harmless LF/CRLF warnings).
+- 2026-11-18 Claude: T14 done: P02 DONE in PROGRESS.md, docs/done/P02-summary.md written, docs/phases/P03-content-model.md created (P03 ACTIVE). Owner told in Gujarati. P02 closed.

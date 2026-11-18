@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-18T08:36:43.751Z",
+  "courses": [
+    {
+      "id": "crs-sci00001",
+      "title": "Sample: General Science",
+      "version": 1,
+      "files": {
+        "courses/crs-sci00001/content.json": "c33fcf5494fc8aad8b741abf53f286070db86d53c5be450109a2aa99b9757cef",
+        "courses/crs-sci00001/course.json": "5a561c6603dcd12792b3f2c85add7f4e6ae9fd4d4577f82ce459b975960557f9",
+        "courses/crs-sci00001/images/water-cycle.svg": "37f19323d3e1bd2d7bacba0d5ff5df03a57e0fb5868ba85254c53a2730906d7d",
+        "courses/crs-sci00001/overview.json": "606be719812f8856bc8896a21928424becf27aea6159436e518f020825c87cba",
+        "courses/crs-sci00001/test.json": "48485b8898fd6321a97374640fafb00cddfa097420227250501a2521a38701e9"
+      }
+    },
+    {
+      "id": "crs-empty001",
+      "title": "Sample: Empty Course",
+      "version": 1,
+      "files": {
+        "courses/crs-empty001/course.json": "a8167eafe88bd980a65c2459939b2c2b844a5f8820f7ccf2d7f62b2819549a91"
+      }
+    }
+  ]
+}

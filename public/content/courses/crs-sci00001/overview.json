@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    { "id": "blk-ov000001", "type": "title", "text": "Sample: General Science" },
+    { "id": "blk-ov000002", "type": "subtitle", "text": "A short course to try out the app" },
+    {
+      "id": "blk-ov000003",
+      "type": "text",
+      "text": "This sample course shows how a course looks. It has an overview, reading content and a short test."
+    },
+    {
+      "id": "blk-ov000004",
+      "type": "image",
+      "src": "images/water-cycle.svg",
+      "alt": "Simple drawing of the water cycle"
+    },
+    {
+      "id": "blk-ov000005",
+      "type": "text",
+      "text": "Use it to check that reading, progress and tests work before real courses are added."
+    }
+  ]
+}

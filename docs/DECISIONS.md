@@ -59,3 +59,9 @@ Still to ask the owner later (not blocking): does the owner have an Android phon
 - Google Play: personal developer accounts created after 2023-11-13 need a closed test with 12 testers for 14 continuous days before production; organization accounts exempt.
 - Android developer verification: enforcement began 2026-09-30 in Brazil, Indonesia, Singapore, Thailand; global in 2027; no India date published as of 2026-11-07. APKs outside Play will need a verified developer once it reaches India → register package name early; PWA is unaffected.
 - vite-plugin-pwa: `registerType: 'prompt'` is the mode that lets the app ask the user before swapping to a new version; confirm Vite/plugin version compatibility with `npm ls` at P01.
+- Dexie: npm `dexie` is on the 4.4.x line (4.4.7 seen 2026-11-18), Apache-2.0, supports PWAs and Capacitor. Tests will use `fake-indexeddb` (MIT, dev only). (P03)
+
+## Decisions made by Claude during phases
+- P02: success color (light) changed `#1b7a43` -> `#17693a` because the original gave only 4.39:1 (needs 4.5:1).
+- P03: theme choice stays in `localStorage` (`np.theme`), NOT Dexie, because it must be read synchronously before first paint (no flash). All other local data goes to Dexie.
+- P03: content validators are hand-written (no schema library) to keep the bundle small. IDs: `crs-/blk-/qst-/tst-` + 8 chars. Content files live in `public/content/` with a hashed `manifest.json`.

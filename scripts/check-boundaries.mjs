@@ -3,7 +3,9 @@
 //   1. A file in src/modules/<a>/ may import only from its own folder and from src/core/.
 //      It must NOT import another src/modules/<b>/ or src/app/.
 //   2. A file in src/core/ must NOT import src/modules/ or src/app/.
-//   3. src/app/ (the composition root) and src/main.tsx may import anything.
+//   3. src/app/ (the composition root) and src/main.tsx may import anything (except rule 4).
+//   4. Only src/core/storage/repo.ts (and *.test.ts files inside src/core/storage/) may import
+//      src/core/storage/db.ts. Every other file must go through the repository (P03, P04 encryption).
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve, dirname, relative, sep } from 'node:path';
 
@@ -27,6 +29,11 @@ function layerOf(absPath) {
   return { kind: 'other' };
 }
 
+const storageDir = resolve(root, 'core', 'storage');
+const storageDb = resolve(storageDir, 'db');
+const storageRepo = resolve(storageDir, 'repo.ts');
+const stripExtension = (p) => p.replace(/\.(ts|tsx|js|jsx|mjs)$/, '');
+
 const patterns = [
   /\bfrom\s+['"]([^'"]+)['"]/, // import x from '..'  /  export * from '..'  /  } from '..'
   /^\s*import\s+['"]([^'"]+)['"]/, // import '..'
@@ -36,19 +43,25 @@ const patterns = [
 const problems = [];
 for (const file of files) {
   const from = layerOf(file);
-  if (from.kind !== 'module' && from.kind !== 'core') continue;
+  const mayImportDb =
+    file === storageRepo || (dirname(file) === storageDir && /\.test\.tsx?$/.test(file));
   const lines = readFileSync(file, 'utf8').split(/\r?\n/);
   lines.forEach((line, i) => {
     for (const re of patterns) {
       const m = re.exec(line);
       if (!m || !m[1].startsWith('.')) continue;
-      const target = layerOf(resolve(dirname(file), m[1]));
+      const resolved = resolve(dirname(file), m[1]);
+      const target = layerOf(resolved);
       const bad =
         (from.kind === 'module' &&
           ((target.kind === 'module' && target.name !== from.name) || target.kind === 'app')) ||
         (from.kind === 'core' && (target.kind === 'module' || target.kind === 'app'));
       if (bad) {
         problems.push(`${relative(process.cwd(), file)}:${i + 1}  imports  ${m[1]}  (not allowed)`);
+      } else if (stripExtension(resolved) === storageDb && !mayImportDb) {
+        problems.push(
+          `${relative(process.cwd(), file)}:${i + 1}  imports  ${m[1]}  (only core/storage/repo.ts may import db.ts)`,
+        );
       }
     }
   });

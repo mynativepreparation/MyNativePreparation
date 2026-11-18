@@ -1,0 +1,7 @@
+{
+  "id": "crs-sci00001",
+  "title": "Sample: General Science",
+  "description": "A short sample course with an overview, reading content and a test.",
+  "cover": "images/water-cycle.svg",
+  "order": 1
+}

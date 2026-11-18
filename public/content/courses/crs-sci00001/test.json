@@ -1,0 +1,49 @@
+{
+  "id": "tst-sci00001",
+  "title": "Water cycle quiz",
+  "questionsPerGame": 5,
+  "questions": [
+    {
+      "id": "qst-q0000001",
+      "text": "What is it called when heat turns liquid water into vapour?",
+      "options": ["Condensation", "Evaporation", "Precipitation", "Collection"],
+      "correctIndex": 1,
+      "explanation": "Heat from the sun turns liquid water into vapour. This is called evaporation."
+    },
+    {
+      "id": "qst-q0000002",
+      "text": "What do many tiny water drops in the air form together?",
+      "options": ["A rock", "Wind", "A cloud", "An ice cube"],
+      "correctIndex": 2
+    },
+    {
+      "id": "qst-q0000003",
+      "text": "Which of these is a form of precipitation?",
+      "options": ["Evaporation", "Snow", "Sunlight", "Vapour"],
+      "correctIndex": 1
+    },
+    {
+      "id": "qst-q0000004",
+      "text": "What heats the water so that it rises as vapour?",
+      "options": ["The Moon", "Wind", "Rivers", "The Sun"],
+      "correctIndex": 3
+    },
+    {
+      "id": "qst-q0000005",
+      "text": "What happens to water vapour high in the cold air?",
+      "options": [
+        "It cools and turns into tiny drops",
+        "It disappears forever",
+        "It turns into soil",
+        "It becomes hotter"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "id": "qst-q0000006",
+      "text": "Where does rainwater finally flow back to?",
+      "options": ["Only to mountains", "Into space", "To rivers and the sea", "Into the Sun"],
+      "correctIndex": 2
+    }
+  ]
+}

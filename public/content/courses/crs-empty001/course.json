@@ -1,0 +1,6 @@
+{
+  "id": "crs-empty001",
+  "title": "Sample: Empty Course",
+  "description": "A course with no sections yet. Used to check the \"not available\" state.",
+  "order": 2
+}

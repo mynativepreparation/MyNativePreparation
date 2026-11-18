@@ -1,0 +1,28 @@
+{
+  "blocks": [
+    { "id": "blk-ct000001", "type": "title", "text": "The water cycle" },
+    {
+      "id": "blk-ct000002",
+      "type": "text",
+      "text": "Water moves between the sea, the air and the land. The sun heats water, and it rises as invisible vapour. This is called evaporation."
+    },
+    { "id": "blk-ct000003", "type": "subtitle", "text": "Condensation" },
+    {
+      "id": "blk-ct000004",
+      "type": "text",
+      "text": "High in the air the vapour cools and turns into tiny drops. Many drops together form a cloud."
+    },
+    {
+      "id": "blk-ct000005",
+      "type": "image",
+      "src": "images/water-cycle.svg",
+      "alt": "Simple drawing of the water cycle: sun, sea, cloud and rain"
+    },
+    { "id": "blk-ct000006", "type": "subtitle", "text": "Precipitation" },
+    {
+      "id": "blk-ct000007",
+      "type": "text",
+      "text": "When the drops in a cloud grow heavy, they fall as rain, hail or snow. The water then flows back to rivers and the sea, and the cycle starts again."
+    }
+  ]
+}

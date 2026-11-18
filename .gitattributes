@@ -1,0 +1,2 @@
+# Content files are served as-is: never convert line endings (the SHA-256 hashes in manifest.json depend on exact bytes).
+public/content/** -text
