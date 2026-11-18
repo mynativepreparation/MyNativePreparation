@@ -1,0 +1,12 @@
+node_modules
+dist
+dev-dist
+builds
+logs
+.env
+.env.*
+*.keystore
+*.jks
+*.pem
+*.log
+.DS_Store

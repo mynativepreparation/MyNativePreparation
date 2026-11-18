@@ -1,0 +1,11 @@
+{
+  "nav.courses": "Courses",
+  "nav.settings": "Settings",
+  "home.title": "Courses",
+  "home.toastButton": "Test the wire",
+  "toast.hello": "Hello from the wire",
+  "settings.title": "Settings",
+  "update.available": "Update available",
+  "update.button": "Update",
+  "error.generic": "Something went wrong on this screen."
+}
