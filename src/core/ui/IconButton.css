@@ -1,0 +1,34 @@
+.np-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--np-touch);
+  height: var(--np-touch);
+  padding: 0;
+  border-radius: 50%;
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  border: 1px solid var(--np-color-border);
+  box-shadow: var(--np-shadow-raised-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    color var(--np-motion-medium) var(--np-ease),
+    border-color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-fast) var(--np-ease),
+    transform var(--np-motion-fast) var(--np-ease);
+}
+
+.np-icon-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.np-icon-button:active:not(:disabled) {
+  box-shadow: var(--np-shadow-inset);
+  transform: none;
+}
+
+.np-icon-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

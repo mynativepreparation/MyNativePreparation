@@ -1,4 +1,4 @@
-# P01 — Repo scaffold, modular structure, central wire, build script   [ACTIVE]
+# P01 — Repo scaffold, modular structure, central wire, build script   [DONE]
 
 Executor note: Claude writes all files with its Filesystem tools. Commands are run ONLY by the owner in Windows
 PowerShell/cmd via `.\run.cmd <script>.ps1` (no IDE, no other agent; DECISIONS Q15). Claude then reads `logs\last-run.txt`.
@@ -104,9 +104,9 @@ everything, (5) one script builds and keeps only the newest build.
 - [x] T12 Final run: `npm run check` → exit 0. `powershell -ExecutionPolicy Bypass -File scripts\build.ps1` → exit 0 and exactly one
        folder in `builds\`. `npm run preview` → open the URL in Chrome; both placeholder screens open; Chrome DevTools >
        Application shows manifest + service worker; no console errors.
-- [ ] T13 Cleanup (AGENTS.md "Phase end checklist"): remove unused files/imports, demo leftovers, `.gitkeep` files that are no longer needed,
+- [x] T13 Cleanup (AGENTS.md "Phase end checklist"): remove unused files/imports, demo leftovers, `.gitkeep` files that are no longer needed,
        logs; `git add -A && git commit -m "P01: scaffold, wire, module isolation, PWA shell"`.
-- [ ] T14 Update `PROGRESS.md` (P01 DONE, P02 ACTIVE), write `docs/done/P01-summary.md` (5 lines), create the detailed `P02` file
+- [x] T14 Update `PROGRESS.md` (P01 DONE, P02 ACTIVE), write `docs/done/P01-summary.md` (5 lines), create the detailed `P02` file
        (design system: neumorphism tokens light/dark, contrast rules, component gallery, overlap check), tell the owner in Gujarati.
 
 ## Acceptance (all must be true)
@@ -125,3 +125,4 @@ everything, (5) one script builds and keeps only the newest build.
 - 2026-11-18 Claude: T8 done via custom `scripts/check-boundaries.mjs` (part of `npm run check`) instead of eslint-plugin-boundaries. p01-verify.ps1: bad import `modules/home -> ../settings/SettingsScreen` was REJECTED, clean code passed (17 files). Next: T10/T12 `.\run.cmd build.ps1`.
 - 2026-11-18 Claude: T10 done. build.ps1 OK (exit 0): check passed, vite build OK, JS 316.68 kB (100.28 kB gzip, budget 250 KB), PWA generateSW with sw.js + manifest, saved to builds\web-0.1.0-20261118-0959. T12 partly done (check + build). Next: T12 browser check via `npm run preview` (owner), then T13 cleanup + git commit, T14 close phase.
 - 2026-11-18 Claude: T12 done. Owner checked preview at localhost:4173: Courses + Settings screens open, wire toast text shows, Chrome shows Install button (manifest + service worker valid). Console warnings came only from a browser extension (contentscript.js / chext_driver.js), not from the app. Wrote scripts/p01-commit.ps1. Next: T13 `.\run.cmd p01-commit.ps1`, then T14.
+- 2026-11-18 Claude: T13 done. p01-commit.ps1 OK: 47 files committed as 9dbdc17 on master (no secrets; node_modules, dist, builds, logs ignored). Local git user is a placeholder. T14 done: PROGRESS.md (P01 DONE, P02 ACTIVE), docs/done/P01-summary.md, docs/phases/P02-design-system.md written. P01 CLOSED.

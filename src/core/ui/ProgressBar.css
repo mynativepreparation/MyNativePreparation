@@ -1,0 +1,30 @@
+.np-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-3);
+}
+
+.np-progress__track {
+  flex: 1;
+  height: var(--np-space-4);
+  overflow: hidden;
+  border-radius: var(--np-radius-pill);
+  background: var(--np-color-surface);
+  border: 1px solid var(--np-color-border);
+  box-shadow: var(--np-shadow-inset);
+}
+
+.np-progress__fill {
+  height: 100%;
+  border-radius: var(--np-radius-pill);
+  background: var(--np-color-accent);
+  transition: width var(--np-motion-slow) var(--np-ease);
+}
+
+.np-progress__text {
+  min-width: calc(var(--np-space-6) + var(--np-space-2));
+  text-align: right;
+  font-size: var(--np-font-size-sm);
+  font-weight: 600;
+  color: var(--np-color-text);
+}

@@ -4,7 +4,12 @@
   "home.title": "Courses",
   "home.toastButton": "Test the wire",
   "toast.hello": "Hello from the wire",
+  "toast.dismiss": "Dismiss",
   "settings.title": "Settings",
+  "settings.theme": "Theme",
+  "theme.system": "System",
+  "theme.light": "Light",
+  "theme.dark": "Dark",
   "update.available": "Update available",
   "update.button": "Update",
   "error.generic": "Something went wrong on this screen."

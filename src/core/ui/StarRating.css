@@ -1,0 +1,13 @@
+.np-stars {
+  display: inline-flex;
+  gap: var(--np-space-1);
+  color: var(--np-color-accent);
+}
+
+.np-stars__star {
+  flex: none;
+}
+
+.np-stars__star:not(.np-stars__star--on) {
+  color: var(--np-color-border);
+}

@@ -1,0 +1,52 @@
+.np-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-1);
+}
+
+.np-field__label {
+  font-weight: 600;
+}
+
+.np-field__input {
+  width: 100%;
+  min-height: var(--np-touch);
+  padding: 0 var(--np-space-4);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-sm);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  box-shadow: var(--np-shadow-inset);
+  font: inherit;
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    color var(--np-motion-medium) var(--np-ease),
+    border-color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-medium) var(--np-ease);
+}
+
+.np-field__input::placeholder {
+  color: var(--np-color-text-muted);
+}
+
+.np-field__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.np-field__hint {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+}
+
+.np-field__error {
+  margin: 0;
+  color: var(--np-color-danger);
+  font-size: var(--np-font-size-sm);
+  font-weight: 600;
+}
+
+.np-field--error .np-field__input {
+  border-color: var(--np-color-danger);
+}

@@ -1,9 +1,41 @@
-import { t } from '../../core/i18n';
+import { Check } from 'lucide-react';
+import { t, type TextKey } from '../../core/i18n';
+import { useTheme } from '../../core/theme/useTheme';
+import type { ThemeMode } from '../../core/theme/theme';
+import { Button, Card } from '../../core/ui';
+import './SettingsScreen.css';
+
+const MODES: { mode: ThemeMode; label: TextKey }[] = [
+  { mode: 'system', label: 'theme.system' },
+  { mode: 'light', label: 'theme.light' },
+  { mode: 'dark', label: 'theme.dark' },
+];
 
 export function SettingsScreen() {
+  const { mode, setMode } = useTheme();
+
   return (
     <section>
       <h1>{t('settings.title')}</h1>
+      <Card>
+        <h2 id="np-theme-label">{t('settings.theme')}</h2>
+        <div className="np-settings__modes" role="group" aria-labelledby="np-theme-label">
+          {MODES.map((m) => {
+            const selected = m.mode === mode;
+            return (
+              <Button
+                key={m.mode}
+                variant={selected ? 'primary' : 'secondary'}
+                aria-pressed={selected}
+                icon={selected ? <Check size={18} aria-hidden="true" /> : undefined}
+                onClick={() => setMode(m.mode)}
+              >
+                {t(m.label)}
+              </Button>
+            );
+          })}
+        </div>
+      </Card>
     </section>
   );
 }

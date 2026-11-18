@@ -1,0 +1,71 @@
+.np-shell__main {
+  /* short fade each time the route changes (the element is re-created per route) */
+  animation: np-fade-in var(--np-motion-slow) var(--np-ease);
+  /* keep the last content clear of the fixed bottom bar */
+  padding-bottom: calc(var(--np-nav-height) + var(--np-space-5));
+}
+
+@keyframes np-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--np-space-2));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.np-nav {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid var(--np-color-border);
+  background: var(--np-color-surface);
+  box-shadow: var(--np-shadow-raised);
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-medium) var(--np-ease);
+}
+
+.np-nav__inner {
+  display: flex;
+  max-width: var(--np-content-max);
+  height: var(--np-nav-height);
+  margin: 0 auto;
+}
+
+.np-nav__link {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--np-space-1);
+  min-height: var(--np-touch);
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  text-decoration: none;
+  transition: color var(--np-motion-medium) var(--np-ease);
+}
+
+/* active page: stronger color, bold label AND a bar on top (not color alone) */
+.np-nav__link.active {
+  color: var(--np-color-accent);
+  font-weight: 700;
+}
+
+.np-nav__link.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  width: 50%;
+  height: var(--np-space-1);
+  border-radius: var(--np-radius-pill);
+  background: var(--np-color-accent);
+}

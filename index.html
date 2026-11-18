@@ -6,6 +6,19 @@
     <meta name="theme-color" content="#e6e9f0" />
     <link rel="icon" href="/pwa-192.png" />
     <title>My Native Preparation</title>
+    <script>
+      // No-flash: paint the right page color before the app code loads.
+      // These two colors must equal colors.light.surface / colors.dark.surface in src/core/ui/tokens.ts (a test checks it).
+      (function () {
+        try {
+          var mode = localStorage.getItem('np.theme');
+          var dark =
+            mode === 'dark' ||
+            (mode !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.style.backgroundColor = dark ? '#23262e' : '#e6e9f0';
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

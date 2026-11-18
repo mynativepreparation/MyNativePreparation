@@ -2,15 +2,15 @@
 
 > Short index. Agents: read this + ONLY the ACTIVE phase file. Boot protocol is in `AGENTS.md`.
 
-**Current ACTIVE phase:** P01 — `docs/phases/P01-scaffold.md` (next task: T1)
+**Current ACTIVE phase:** P02 — `docs/phases/P02-design-system.md` (next task: T12, owner runs build.ps1)
 **Last updated:** 2026-11-18 by Claude
 
 ## Phases (web-first: PWA is the main product, Android APK is a later wrapper)
 | ID  | Name                                              | Status   | File |
 |-----|---------------------------------------------------|----------|------|
 | P00 | Read spec, challenges, owner decisions            | DONE     | docs/done/P00-summary.md |
-| P01 | Repo scaffold, modular structure, central wire, PWA shell, build script | ACTIVE | docs/phases/P01-scaffold.md |
-| P02 | Design system: neumorphism tokens, light/dark, responsive, component gallery | TODO | (created when P02 starts) |
+| P01 | Repo scaffold, modular structure, central wire, PWA shell, build script | DONE | docs/done/P01-summary.md |
+| P02 | Design system: neumorphism tokens, light/dark, responsive, component gallery | ACTIVE | docs/phases/P02-design-system.md |
 | P03 | Content model: course/blocks/test schema, manifest, stable IDs, sample course, local DB | TODO | — |
 | P04 | Identity: 12-word key, register/login, onboarding screens, encrypted local store | TODO | — |
 | P05 | Home (courses) + 4 tiles + navigation + "not available" state | TODO | — |
@@ -25,4 +25,5 @@
 | P14 | QA, accessibility, performance, cleanup, release docs | TODO | — |
 
 ## Recent log (last 5 lines only; full logs live in phase files)
-- 2026-11-18 Claude: P00 closed. Owner answered Q1–Q14. P01 detailed plan written. Next: owner/IDE agent runs scripts\check-env.ps1 (P01 T1).
+- 2026-11-18 Claude: P01 closed (commit 9dbdc17). P02 detailed plan written. Next: P02 T1 (install lucide-react via script).
+- 2026-11-18 Claude: P02 T1-T10 done and verified (52 tests). T11 owner visual check started (scripts/p02-preview.ps1).

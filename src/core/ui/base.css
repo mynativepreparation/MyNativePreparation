@@ -1,0 +1,82 @@
+/* Global base styles. Colors only through theme variables (set by the theme engine). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  font-family: var(--np-font-sans);
+  font-size: var(--np-font-size-base);
+  line-height: 1.5;
+  /* keep content clear of phone notches / system bars */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    color var(--np-motion-medium) var(--np-ease);
+}
+
+#root {
+  max-width: var(--np-content-max);
+  margin: 0 auto;
+  padding: var(--np-space-4);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 var(--np-space-3);
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: var(--np-font-size-xxl);
+}
+
+h2 {
+  font-size: var(--np-font-size-xl);
+}
+
+h3 {
+  font-size: var(--np-font-size-lg);
+}
+
+p {
+  margin: 0 0 var(--np-space-3);
+}
+
+a {
+  color: var(--np-color-accent);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+/* visible keyboard focus everywhere */
+:focus-visible {
+  outline: 3px solid var(--np-color-accent);
+  outline-offset: 3px;
+}
+
+/* respect the "reduce motion" device setting */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

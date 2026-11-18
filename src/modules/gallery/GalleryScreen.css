@@ -1,0 +1,26 @@
+.np-gallery__section {
+  margin-bottom: var(--np-space-5);
+}
+
+.np-gallery__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--np-space-4);
+}
+
+/* wide components share the row but never overflow it */
+.np-gallery__row > .np-gallery__report {
+  flex: 1 1 200px;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.np-gallery__row > .np-field,
+.np-gallery__row > .np-progress,
+.np-gallery__row > .np-tile,
+.np-gallery__row > .np-card,
+.np-gallery__row > .np-surface {
+  flex: 1 1 200px;
+  min-width: 0;
+}

@@ -1,0 +1,11 @@
+.np-card {
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  border-radius: var(--np-radius-md);
+  box-shadow: var(--np-shadow-raised);
+  padding: var(--np-space-4);
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-medium) var(--np-ease);
+}

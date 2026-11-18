@@ -1,0 +1,52 @@
+.np-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--np-space-3);
+  min-height: var(--np-touch);
+  padding: 0 var(--np-space-2);
+  border: 0;
+  background: transparent;
+  color: var(--np-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.np-toggle__track {
+  position: relative;
+  flex: none;
+  width: calc(var(--np-space-6) + var(--np-space-5));
+  height: calc(var(--np-space-5) + var(--np-space-2));
+  border-radius: var(--np-radius-pill);
+  background: var(--np-color-surface);
+  border: 1px solid var(--np-color-border);
+  box-shadow: var(--np-shadow-inset);
+}
+
+.np-toggle__knob {
+  position: absolute;
+  top: 50%;
+  left: var(--np-space-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--np-space-5);
+  height: var(--np-space-5);
+  border-radius: 50%;
+  background: var(--np-color-border);
+  color: var(--np-color-on-accent);
+  box-shadow: var(--np-shadow-raised-sm);
+  transform: translateY(-50%);
+  transition:
+    left var(--np-motion-medium) var(--np-ease),
+    background-color var(--np-motion-medium) var(--np-ease);
+}
+
+.np-toggle--on .np-toggle__knob {
+  left: calc(100% - var(--np-space-5) - var(--np-space-1));
+  background: var(--np-color-accent);
+}
+
+.np-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

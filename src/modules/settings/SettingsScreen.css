@@ -1,0 +1,5 @@
+.np-settings__modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}

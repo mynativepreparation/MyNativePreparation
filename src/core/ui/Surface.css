@@ -1,0 +1,11 @@
+.np-surface {
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  border-radius: var(--np-radius-sm);
+  box-shadow: var(--np-shadow-inset);
+  padding: var(--np-space-3);
+  transition:
+    background-color var(--np-motion-medium) var(--np-ease),
+    color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-medium) var(--np-ease);
+}

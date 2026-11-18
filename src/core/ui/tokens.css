@@ -1,0 +1,44 @@
+/* Non-color design tokens. Colors come from tokens.ts (written as CSS variables by the theme engine).
+   Rule: component CSS may only use var(--np-...) values; no raw colors, no magic numbers. */
+:root {
+  /* shape */
+  --np-radius-sm: 12px;
+  --np-radius-md: 20px;
+  --np-radius-lg: 28px;
+  --np-radius-pill: 999px;
+
+  /* spacing scale */
+  --np-space-1: 4px;
+  --np-space-2: 8px;
+  --np-space-3: 12px;
+  --np-space-4: 16px;
+  --np-space-5: 24px;
+  --np-space-6: 32px;
+
+  /* touch target (accessibility minimum) */
+  --np-touch: 44px;
+
+  /* layout */
+  --np-content-max: 720px;
+  --np-nav-height: 64px;
+  --np-z-toast: 1000;
+
+  /* typography: system fonts only (no download), Gujarati fallbacks included */
+  --np-font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Gujarati', 'Nirmala UI', sans-serif;
+  --np-font-size-sm: 0.875rem;
+  --np-font-size-base: 1rem;
+  --np-font-size-lg: 1.25rem;
+  --np-font-size-xl: 1.625rem;
+  --np-font-size-xxl: 2rem;
+
+  /* motion */
+  --np-motion-fast: 120ms;
+  --np-motion-medium: 200ms;
+  --np-motion-slow: 320ms;
+  --np-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* neumorphism shadows (built from the theme colors) */
+  --np-shadow-raised: 6px 6px 14px var(--np-color-shadow-dark), -6px -6px 14px var(--np-color-shadow-light);
+  --np-shadow-raised-sm: 3px 3px 8px var(--np-color-shadow-dark), -3px -3px 8px var(--np-color-shadow-light);
+  --np-shadow-inset: inset 4px 4px 10px var(--np-color-shadow-dark), inset -4px -4px 10px var(--np-color-shadow-light);
+}

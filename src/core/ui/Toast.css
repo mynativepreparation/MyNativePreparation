@@ -1,0 +1,24 @@
+.np-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--np-nav-height) + var(--np-space-4) + env(safe-area-inset-bottom));
+  z-index: var(--np-z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-3);
+  width: max-content;
+  max-width: calc(100vw - var(--np-space-6));
+  padding: var(--np-space-3) var(--np-space-4);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  box-shadow: var(--np-shadow-raised);
+  transform: translateX(-50%);
+  overflow-wrap: anywhere;
+}
+
+.np-toast svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
