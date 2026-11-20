@@ -1,0 +1,88 @@
+.np-course {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-course > h1,
+.np-course__desc {
+  margin: 0;
+}
+
+.np-course__desc {
+  color: var(--np-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* 1 column on a 360 px phone, 2 on wider screens; never sideways scroll */
+.np-course__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--np-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.np-course__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-2);
+  animation: np-course-fade var(--np-motion-medium) var(--np-ease) both;
+}
+
+/* a tile whose data is empty or broken: dimmed, not tappable-looking; the message below stays fully readable */
+.np-course__item .np-course__tile--off {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.np-course__item .np-course__tile--off:hover {
+  transform: none;
+}
+
+.np-course__note {
+  padding: 0 var(--np-space-2);
+}
+
+.np-course__skeleton {
+  min-height: calc(var(--np-touch) * 3);
+  box-shadow: var(--np-shadow-inset);
+}
+
+.np-course__message p {
+  margin: 0;
+}
+
+/* buttons wrap on a 360 px phone instead of scrolling sideways */
+.np-course__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+/* text for screen readers only */
+.np-course__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes np-course-fade {
+  from {
+    opacity: 0;
+    transform: translateY(var(--np-space-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

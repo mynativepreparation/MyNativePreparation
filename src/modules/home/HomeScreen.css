@@ -1,0 +1,128 @@
+.np-home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-home > h1,
+.np-home__intro {
+  margin: 0;
+}
+
+.np-home__intro {
+  color: var(--np-color-text-muted);
+}
+
+/* 1 column on a 360 px phone, 2-3 on wider screens; never sideways scroll */
+.np-home__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--np-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.np-home__card {
+  padding: 0;
+  overflow: hidden;
+  animation: np-home-fade var(--np-motion-medium) var(--np-ease) both;
+}
+
+.np-home__open {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  width: 100%;
+  min-height: calc(var(--np-touch) * 3);
+  padding: var(--np-space-4);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.np-home__open[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+.np-home__cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--np-radius-md);
+}
+
+.np-home__cover--icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--np-color-accent);
+}
+
+.np-home__title {
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.np-home__desc {
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+/* a disabled course dims its picture and title, but the message below stays fully readable */
+.np-home__card--off .np-home__cover,
+.np-home__card--off .np-home__title {
+  opacity: 0.7;
+}
+
+.np-home__note {
+  padding: 0 var(--np-space-4) var(--np-space-4);
+}
+
+.np-home__skeleton {
+  min-height: calc(var(--np-touch) * 3);
+  box-shadow: var(--np-shadow-inset);
+}
+
+.np-home__message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--np-space-3);
+}
+
+.np-home__message p {
+  margin: 0;
+}
+
+/* text for screen readers only */
+.np-home__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes np-home-fade {
+  from {
+    opacity: 0;
+    transform: translateY(var(--np-space-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

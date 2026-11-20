@@ -1,0 +1,13 @@
+.np-not-available {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--np-space-2);
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.np-not-available > svg {
+  flex-shrink: 0;
+}

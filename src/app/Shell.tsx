@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { BookOpen, Settings } from 'lucide-react';
 import { t } from '../core/i18n';
 import { Toast } from '../core/ui';
@@ -12,6 +12,8 @@ const TOAST_MS = 4000;
 export function Shell() {
   const [toast, setToast] = useState<string | null>(null);
   const { pathname } = useLocation();
+  // Courses stays highlighted on the course screens too (/course/...), not only on the list itself.
+  const onCourses = pathname === '/' || pathname.startsWith('/course/');
 
   useEffect(() => wire.on('ui.toast', ({ message }) => setToast(message)), []);
 
@@ -30,10 +32,14 @@ export function Shell() {
       {toast && <Toast message={toast} />}
       <nav className="np-nav" aria-label="Main">
         <div className="np-nav__inner">
-          <NavLink to="/" end className="np-nav__link">
+          <Link
+            to="/"
+            className={onCourses ? 'np-nav__link active' : 'np-nav__link'}
+            aria-current={onCourses ? (pathname === '/' ? 'page' : 'true') : undefined}
+          >
             <BookOpen size={24} aria-hidden="true" />
             <span>{t('nav.courses')}</span>
-          </NavLink>
+          </Link>
           <NavLink to="/settings" className="np-nav__link">
             <Settings size={24} aria-hidden="true" />
             <span>{t('nav.settings')}</span>
