@@ -1,21 +1,19 @@
 # NEXT — hand-off in 20 lines (read right after AGENTS.md; keep it SHORT, rewrite it at the end of every task)
 
-Updated: 2026-11-20 by Claude.  P05 is CLOSED (commit ccbb2ba on master; 678 tests, build JS 165.40 KB gzip, `npm audit` 0 vulnerabilities).  ACTIVE phase: P06 (`docs/phases/P06-reader.md`, 9 tasks).  T1-T8 DONE (last check exit 0, 762 tests; owner visual check OK on PC and phone).  T9 (phase end) in progress: `scripts/p06-commit.ps1` written, NOT yet run; T9 box still `[ ]`.
+Updated: 2026-11-20 by Claude.  P06 CLOSED (commit `c030dc6`; build JS **177.75 KB gzip**, budget 250; `npm audit --omit=dev` 0).  ACTIVE phase: **P07 Test game** (`docs/phases/P07-test-game.md`, T1-T12). T1-T10 DONE (967 tests green, 67 files; owner visual check passed after the wrong-answer sound fix). T11 script `scripts/p07-commit.ps1` WRITTEN, not yet run.
 
 ## State on disk
-- Everything is committed (ccbb2ba) except: log/NEXT/PROGRESS edits, `scripts/p06-npm-info.ps1`, `scripts/p06-install.ps1`, the Q17 line in DECISIONS.md, `package.json` / `package-lock.json` (react-zoom-pan-pinch 4.2.0), and all new P06 source (`src/modules/reader/*`, `core/ui/NotAvailable.*`, home/app edits); they go into the P06 commit.
-- Routes live: `/`, `/course/:id`, `/course/:id/overview|content` (real reader after T6), `/course/:id/test|report` (placeholders; P07 test, P08 report; keep the paths).
-- Fingerprint + PIN lock: done in P04 (docs/IDENTITY.md "Locks"); only leftover (not blocking): both app locks are set from Settings.
-- P06 plan facts: module `src/modules/reader/`; font scale 0.8-2.0 by two-finger pinch + `A-`/`A+`; image tap = full-screen zoom viewer with `react-zoom-pan-pinch` 4.2.0 (used ONLY in ImageViewer; text pinch is our own Pointer Events code).
-- Open note: the full `npm audit` printed 4 moderate vulnerabilities at the P06 install (`npm audit --omit=dev` = 0, so dev side). Re-check at T9 (`npm audit`, read only the summary); not blocking now.
-- CSS rules (styles.test.ts): no hex colors, no raw `ms`/`s` durations, tokens only (`--np-space-1..5`, `--np-color-surface|text|text-muted|accent|border`, `--np-radius-md|lg|pill`, `--np-shadow-raised|inset`, `--np-motion-medium|slow`, `--np-ease`, `--np-font-size-sm|lg`, `--np-touch`, `--np-nav-height`, `--np-content-max`).
+- Uncommitted (go into the P07 commit): `scripts/js-size.ps1`, the `build.ps1` change, `docs/done/P06-summary.md`, PROGRESS/NEXT/DECISIONS (Q18) edits, the P07 file, `scripts/p07-*.ps1`, all `src/modules/test-game/*`, plus the extras `deleteSetting(key)` in `repo.ts` + its test (harmless, KEEP).
+- INCIDENT 2026-11-20 (fixed by `scripts/p07-restore.ps1`): `src/core/storage/sessionStore.ts` is a REAL file used by 10 files. NEVER delete or rewrite a file only because it looks unused; read its head and the importers first.
+- Routes live: `/`, `/course/:id`, overview/content = reader, `/course/:id/test` = real game (module `test-game`, auto-found by `app/boot.ts`); only `/course/:id/report` is still a placeholder in `modules/home/index.tsx` (P08).
+- P07 decisions: pure `engine.ts`, NO new dependency (own Web Audio `sound.ts` + own canvas `confetti.ts`, DECISIONS Q18), stars/percent only from `core/content/scoring.ts`, `repo.addAttempt` once at the end, mute in localStorage `np.test.sound`. Wrong-answer sound = triangle E4 sliding to C4 (fixed on owner report; if the laptop is ever silent again, first suspect the cached old build: `registerType: 'prompt'` in `vite.config.ts`).
+- Open, not blocking: 4 moderate dev-only audit findings (`minimatch` via `vite-plugin-pwa`), a P14 item.
 
 ## Do now (one step per run)
-1. T9 part 1: the owner runs `.\run.cmd build.ps1` (check + build; JS gzip must be <= 250 KB; exactly one folder in `builds\`), then `.\run.cmd p06-commit.ps1`. Claude reads tail 40 of each log (build: the gzip line; commit: audit summary + commit hash).
-2. T9 part 2 (after the commit): PROGRESS.md (P06 DONE, P07 ACTIVE), `docs/done/P06-summary.md` (5 lines), the P07 file (the Test game; read SPEC C5 + DECISIONS Q5/Q6 only for that; web search for sound/confetti libraries first), tick T9, rewrite this file.
+1. Owner runs `.\run.cmd build.ps1` (JS gzip must be <= 250 KB; exactly one folder in `builds\`). Claude reads tail 40; if red fix only what failed. Then the owner runs `.\run.cmd p07-commit.ps1`; Claude reads tail 40 (expect: no new runtime dependency OK, no library OK, sessionStore exists OK, `npm audit --omit=dev` 0, commit `P07: test game, stars, sound, confetti`). Then tick T11 + one log line.
+2. T12 phase end (new files first): `docs/done/P07-summary.md` (5 lines, with the JS number), PROGRESS.md (P07 DONE, P08 ACTIVE; read its head first), the detailed `docs/phases/P08-*.md` (Report PDF: start with a Gujarati text-shaping spike; web search PDF libraries first; check licences and the 250 KB JS budget; record the choice in DECISIONS.md tail 6 / append), rewrite this file for P08, tell the owner in Gujarati.
 
 ## Token rules (the owner hit the limit several times)
-- NEVER read a file > 10 KB whole. Use `head` / `tail`. Do NOT read the P04 or P05 file again; the P06 file is short. Big files: biometric.ts, pin.ts, session.ts, biometric.test.ts, PinCard.tsx, en.json (12 KB), DECISIONS.md (14 KB).
-- Do NOT use `directory_tree` on `src`; use `list_directory`. Do NOT re-read files already reviewed in the log. Put NEW tests in NEW small files.
-- One step per run; after each: tick box + ONE short log line + rewrite this file. Write files first, long thinking later.
+- NEVER read a file > 10 KB whole. Use `head` / `tail`. Do NOT read the P04, P05, P06 or P07 file again except head 40 / tail 6. Big files: biometric.ts, pin.ts, session.ts, biometric.test.ts, PinCard.tsx, sound.test.ts, en.json (12 KB), DECISIONS.md (15 KB; head 28 or tail 6 only).
+- The disk can be newer than memory: before editing a core file, read its head. Do NOT use `directory_tree` on `src`; use `list_directory`. NEW tests go into NEW small files. Use `edit_file` for small edits. After each step: tick box + ONE short log line + rewrite this file. Write files first, long thinking later.
 - JSON edit tip: when a tool call carries Gujarati, type the real characters (not \u escapes), then check the diff.

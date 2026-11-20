@@ -9,6 +9,10 @@ Write-Host ">>> Build" -ForegroundColor Cyan
 npm run build
 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed." -ForegroundColor Red; exit 1 }
 
+Write-Host ">>> JS size (budget 250 KB gzip, DECISIONS Q14)" -ForegroundColor Cyan
+& ".\scripts\js-size.ps1"
+if ($LASTEXITCODE -ne 0) { Write-Host "JS is over the budget - build not saved." -ForegroundColor Red; exit 1 }
+
 $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
 $name = "web-" + $version + "-" + (Get-Date -Format 'yyyyMMdd-HHmm')
 New-Item -ItemType Directory -Force -Path builds | Out-Null

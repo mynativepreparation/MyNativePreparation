@@ -5,6 +5,7 @@ import type { LoadedCourse } from '../core/content/loader';
 import { t } from '../core/i18n';
 import homeModule from '../modules/home';
 import readerModule from '../modules/reader';
+import testGameModule from '../modules/test-game';
 import { Shell } from './Shell';
 
 // The loader is mocked: this file tests that the REAL home routes sit inside the REAL Shell (bottom navigation) and that
@@ -29,7 +30,7 @@ const fullCourse: LoadedCourse = {
 
 function renderAt(path: string) {
   const router = createMemoryRouter(
-    [{ path: '/', element: <Shell />, children: [...homeModule.routes, ...readerModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
+    [{ path: '/', element: <Shell />, children: [...homeModule.routes, ...readerModule.routes, ...testGameModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
     { initialEntries: [path] },
   );
   return render(<RouterProvider router={router} />);
@@ -89,10 +90,36 @@ describe('home routes inside the Shell', () => {
     }
   });
 
-  it('the Test route exists too (its tile is disabled for this course, so it is opened by address)', async () => {
+  it('the Test route is the real test game (P07); a course without a test shows the not-available state, opened by address', async () => {
     renderAt(`/course/${ID}/test`);
     expect(await screen.findByRole('heading', { level: 1, name: t('course.tile.test') })).toBeInTheDocument();
+    expect(screen.getByText(t('course.unavailable'))).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
+  });
+
+  it('the Test route of a course with a test opens the game intro inside the Shell, and Back returns to the course', async () => {
+    courseMock.mockResolvedValue({
+      ...fullCourse,
+      test: {
+        state: 'ready',
+        value: {
+          id: 'tst_aaaaaaaa',
+          title: 'Science quiz',
+          questionsPerGame: 5,
+          questions: [
+            { id: 'qst_aaaaaaaa', text: 'Q one?', options: ['a', 'b', 'c', 'd'], correctIndex: 0 },
+            { id: 'qst_bbbbbbbb', text: 'Q two?', options: ['a', 'b', 'c', 'd'], correctIndex: 1 },
+          ],
+        },
+      },
+    } satisfies LoadedCourse);
+    renderAt(`/course/${ID}/test`);
+    expect(await screen.findByRole('heading', { level: 2, name: 'Science quiz' })).toBeInTheDocument();
+    expect(screen.getByText('2 questions')).toBeInTheDocument(); // 5 per game asked, only 2 exist
+    expect(screen.getByRole('button', { name: t('testGame.start') })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: t('course.backToCourse') }));
+    await screen.findByRole('heading', { level: 1, name: 'General Science' });
   });
 
   it('an unknown course shows the not-available state inside the Shell', async () => {

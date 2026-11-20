@@ -4,10 +4,44 @@
   color: var(--np-color-accent);
 }
 
+/* tone="star": earned stars use the golden star colour (still filled, so never colour alone) */
+.np-stars--star {
+  color: var(--np-color-star);
+}
+
 .np-stars__star {
   flex: none;
 }
 
 .np-stars__star:not(.np-stars__star--on) {
   color: var(--np-color-border);
+}
+
+/* animate: each earned star pops in after the one before it.
+   Delay = its position (set inline as --np-star-index) times one medium motion step. */
+.np-stars--animate .np-stars__star--on {
+  animation: np-star-pop var(--np-motion-slow) var(--np-ease) backwards;
+  animation-delay: calc(var(--np-star-index, 0) * var(--np-motion-medium));
+}
+
+@keyframes np-star-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* reduce motion: the stars simply appear */
+@media (prefers-reduced-motion: reduce) {
+  .np-stars--animate .np-stars__star--on {
+    animation: none;
+  }
 }

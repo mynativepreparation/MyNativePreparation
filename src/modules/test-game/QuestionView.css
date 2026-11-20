@@ -1,0 +1,218 @@
+.np-question {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  animation: np-question-in var(--np-motion-slow) var(--np-ease);
+}
+
+.np-question__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--np-space-3);
+  font-size: var(--np-font-size-sm);
+}
+
+.np-question__top p {
+  margin: 0;
+}
+
+.np-question__count {
+  color: var(--np-color-text-muted);
+}
+
+.np-question__score {
+  color: var(--np-color-text);
+  font-weight: 700;
+}
+
+.np-question__text {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  overflow-wrap: anywhere;
+}
+
+.np-question__options {
+  display: grid;
+  gap: var(--np-space-3);
+}
+
+/* one answer option: letter | text (+ tag) | icon */
+.np-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--np-space-3);
+  width: 100%;
+  min-height: var(--np-touch);
+  padding: var(--np-space-3) var(--np-space-4);
+  border: 2px solid transparent;
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  box-shadow: var(--np-shadow-raised-sm);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--np-motion-medium) var(--np-ease),
+    box-shadow var(--np-motion-medium) var(--np-ease),
+    transform var(--np-motion-fast) var(--np-ease);
+}
+
+@media (hover: hover) {
+  .np-option:hover:not(:disabled) {
+    border-color: var(--np-color-accent);
+  }
+}
+
+/* press feedback */
+.np-option:active:not(:disabled) {
+  box-shadow: var(--np-shadow-inset);
+  transform: scale(0.99);
+}
+
+.np-option:disabled {
+  cursor: default;
+}
+
+.np-option__letter {
+  display: grid;
+  place-items: center;
+  min-width: var(--np-space-6);
+  height: var(--np-space-6);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-pill);
+  font-weight: 700;
+}
+
+.np-option__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.np-option__text {
+  overflow-wrap: anywhere;
+}
+
+/* the word that goes with the colour and the icon */
+.np-option__tag {
+  font-size: var(--np-font-size-sm);
+  font-weight: 700;
+}
+
+.np-option--correct {
+  border-color: var(--np-color-success);
+  animation: np-option-pop var(--np-motion-slow) var(--np-ease);
+}
+
+.np-option--correct .np-option__icon,
+.np-option--correct .np-option__tag {
+  color: var(--np-color-success);
+}
+
+.np-option--wrong {
+  border-color: var(--np-color-danger);
+  box-shadow: var(--np-shadow-inset);
+  animation: np-option-shake var(--np-motion-slow) var(--np-ease);
+}
+
+.np-option--wrong .np-option__icon,
+.np-option--wrong .np-option__tag {
+  color: var(--np-color-danger);
+}
+
+/* options that are neither the right one nor the chosen one */
+.np-option--rest {
+  color: var(--np-color-text-muted);
+  box-shadow: none;
+}
+
+.np-option__icon {
+  flex: none;
+}
+
+.np-question__feedback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+}
+
+.np-feedback--correct {
+  color: var(--np-color-success);
+}
+
+.np-feedback--wrong {
+  color: var(--np-color-danger);
+}
+
+.np-question__explanation p {
+  margin: 0;
+}
+
+.np-question__explanation-title {
+  margin-bottom: var(--np-space-1);
+  font-weight: 700;
+}
+
+.np-question__explanation-text {
+  overflow-wrap: anywhere;
+}
+
+.np-question__next {
+  width: 100%;
+}
+
+.np-question__hint {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+}
+
+@keyframes np-question-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--np-space-3));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes np-option-pop {
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes np-option-shake {
+  20%,
+  60% {
+    transform: translateX(calc(var(--np-space-1) * -1));
+  }
+  40%,
+  80% {
+    transform: translateX(var(--np-space-1));
+  }
+}
+
+/* reduce motion: no slide, pop or shake (the icon and the word still tell the result) */
+@media (prefers-reduced-motion: reduce) {
+  .np-question,
+  .np-option--correct,
+  .np-option--wrong {
+    animation: none;
+  }
+}

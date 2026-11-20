@@ -35,6 +35,7 @@ const PAIRS: [Key, Key, number, string][] = [
   ['border', 'surface', 3, 'control outline, empty stars, toggle knob'],
   ['accent', 'surface', 3, 'icons, progress fill, toggle knob on'],
   ['danger', 'surface', 3, 'error outline'],
+  ['star', 'surface', 3, 'earned stars in the Test result'],
 ];
 
 describe('WCAG contrast of the design tokens', () => {

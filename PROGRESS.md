@@ -2,7 +2,7 @@
 
 > Short index. Agents: read this + ONLY the ACTIVE phase file. Boot protocol is in `AGENTS.md`.
 
-**Current ACTIVE phase:** P06 — `docs/phases/P06-reader.md` (P05 closed with commit ccbb2ba; P06 plan written, next: T1 library decision; see NEXT.md)
+**Current ACTIVE phase:** P07 — `docs/phases/P07-test-game.md` (P06 closed with commit c030dc6; P07 plan written, next: T1; see NEXT.md)
 **Last updated:** 2026-11-20 by Claude
 
 ## Phases (web-first: PWA is the main product, Android APK is a later wrapper)
@@ -14,8 +14,8 @@
 | P03 | Content model: course/blocks/test schema, manifest, stable IDs, sample course, local DB | DONE | docs/done/P03-summary.md |
 | P04 | Identity: 12-word key, register/login, onboarding screens, encrypted local store | DONE | docs/done/P04-summary.md |
 | P05 | Home (courses) + 4 tiles + navigation + "not available" state | DONE | docs/done/P05-summary.md |
-| P06 | E-book reader: blocks, font zoom, image pinch-zoom | ACTIVE | docs/phases/P06-reader.md |
-| P07 | Test game: quiz engine, score, stars, animation, sound | TODO | — |
+| P06 | E-book reader: blocks, font zoom, image pinch-zoom | DONE | docs/done/P06-summary.md |
+| P07 | Test game: quiz engine, score, stars, animation, sound | ACTIVE | docs/phases/P07-test-game.md |
 | P08 | Report PDF (Gujarati shaping spike first), save/share with rename | TODO | — |
 | P09 | Settings: profile, passphrase info, update button, About | TODO | — |
 | P10 | Admin page: GitHub-token login, course editor, test editor (Word paste / ** / form), edit/delete | TODO | — |
@@ -29,3 +29,4 @@
 - 2026-11-19 Claude: P04 T12c (PIN lock) and T12d (fingerprint + PIN together: a good fingerprint opens the app alone, otherwise the PIN screen) done; owner tested on his phone. 634 tests green.
 - 2026-11-20 Claude: P04 T14-T16 done: docs/IDENTITY.md, build JS 163.4 KB gzip, cleanup, `npm audit` 0 vulnerabilities, 632 tests green.
 - 2026-11-20 Claude: P05 T1-T8 done: Home + Course screens, 6 routes, layout guard, owner visual check "all good", 678 tests green, build JS 165.40 KB gzip. P06 detailed plan written (docs/phases/P06-reader.md, 9 tasks). P05 closed (commit ccbb2ba on master). Next: P06 T1 (library decision).
+- 2026-11-20 Claude: P06 closed (commit c030dc6, 762 tests, build JS 177.75 KB gzip, owner check OK on PC and phone). P07 is ACTIVE; its plan is being written.

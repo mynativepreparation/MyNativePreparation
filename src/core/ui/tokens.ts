@@ -16,6 +16,7 @@ export interface ColorTokens {
   shadowDark: string; // neumorphism shade
   danger: string;
   success: string;
+  star: string; // earned stars in the Test result (non-text, needs 3:1 against surface)
 }
 
 export const colors: Record<ThemeName, ColorTokens> = {
@@ -30,6 +31,7 @@ export const colors: Record<ThemeName, ColorTokens> = {
     shadowDark: '#babecc',
     danger: '#b3261e',
     success: '#17693a',
+    star: '#9a5700',
   },
   dark: {
     surface: '#23262e',
@@ -42,6 +44,7 @@ export const colors: Record<ThemeName, ColorTokens> = {
     shadowDark: '#181a20',
     danger: '#ff8a80',
     success: '#6fd39a',
+    star: '#ffc857',
   },
 };
 

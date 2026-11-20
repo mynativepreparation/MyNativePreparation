@@ -1,0 +1,73 @@
+.np-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  animation: np-result-in var(--np-motion-slow) var(--np-ease);
+}
+
+.np-result__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--np-space-3);
+  text-align: center;
+}
+
+.np-result__title {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+}
+
+.np-result__stars {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--np-space-2);
+}
+
+.np-result__cheer {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.np-result__percent {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+}
+
+.np-result__summary {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+}
+
+.np-result__actions {
+  display: grid;
+  gap: var(--np-space-3);
+}
+
+.np-result__actions .np-button {
+  width: 100%;
+  max-width: 100%;
+}
+
+@keyframes np-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--np-space-3));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* reduce motion: no slide (the stars have their own switch in StarRating.css) */
+@media (prefers-reduced-motion: reduce) {
+  .np-result {
+    animation: none;
+  }
+}
