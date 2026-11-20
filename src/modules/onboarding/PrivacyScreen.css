@@ -1,0 +1,39 @@
+.np-privacy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-privacy > h1 {
+  margin: 0;
+}
+
+.np-privacy__icon {
+  display: inline-flex;
+}
+
+.np-privacy__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-privacy__card p {
+  margin: 0;
+}
+
+.np-privacy__error {
+  margin: 0;
+  font-weight: 600;
+}
+
+.np-privacy__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-privacy__actions .np-button {
+  flex: 1 1 140px;
+}

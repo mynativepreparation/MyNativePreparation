@@ -1,0 +1,40 @@
+.np-login {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-login > h1,
+.np-login > p {
+  margin: 0;
+}
+
+.np-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
+/* the shared field style is single-line; the 12 words need a taller box that still follows the same tokens */
+.np-login__input {
+  min-height: calc(var(--np-touch) * 2);
+  padding: var(--np-space-3) var(--np-space-4);
+  resize: vertical;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.np-login__message:empty {
+  display: none;
+}
+
+.np-login__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-login__actions .np-button {
+  flex: 1 1 140px;
+}

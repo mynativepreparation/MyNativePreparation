@@ -5,5 +5,10 @@ import type { Wire } from './wire';
 export interface AppModule {
   id: string;
   routes: RouteObject[];
+  /**
+   * 'shell' (default): screens appear inside the app frame with the bottom navigation.
+   * 'plain': full-screen pages without navigation (welcome, register, login ...).
+   */
+  layout?: 'shell' | 'plain';
   init?: (wire: Wire) => void;
 }

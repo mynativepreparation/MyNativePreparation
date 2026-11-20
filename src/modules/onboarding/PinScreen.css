@@ -1,0 +1,42 @@
+/* Shared by the PIN lock screen (PinScreen) and the PIN offer (PinSetupScreen). */
+.np-pin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-pin > h1,
+.np-pin > p {
+  margin: 0;
+}
+
+.np-pin__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
+/* digits spread out a little; stays inside a 360 px phone */
+.np-pin__input {
+  letter-spacing: 0.4em;
+  font-variant-numeric: tabular-nums;
+  max-width: 14rem;
+}
+
+.np-pin__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--np-space-3);
+}
+
+.np-pin__notice p {
+  margin: 0;
+}
+
+/* buttons wrap on a 360 px phone instead of scrolling sideways */
+.np-pin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}

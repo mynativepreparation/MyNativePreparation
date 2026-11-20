@@ -1,0 +1,110 @@
+.np-register {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-register > h1,
+.np-register > p {
+  margin: 0;
+}
+
+/* the 12 words: as many columns as fit (2 on a 360 px phone), never sideways scrolling */
+.np-register__words {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
+  gap: var(--np-space-2) var(--np-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.np-register__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--np-space-2);
+  min-width: 0;
+}
+
+.np-register__num {
+  flex: none;
+  min-width: var(--np-space-5);
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* the words stay selectable so they can be copied by hand when the Copy button fails */
+.np-register__word {
+  min-width: 0;
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* read by screen readers ("Word 1"), not shown */
+.np-register__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.np-register__copy {
+  display: flex;
+}
+
+/* warning cards: icon AND text, never color alone */
+.np-register__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--np-space-3);
+}
+
+.np-register__notice svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-register__notice p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-register__confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-3);
+  min-height: var(--np-touch);
+  cursor: pointer;
+}
+
+.np-register__confirm input {
+  flex: none;
+  width: var(--np-space-5);
+  height: var(--np-space-5);
+  margin: 0;
+  accent-color: var(--np-color-accent);
+}
+
+.np-register__error {
+  margin: 0;
+  font-weight: 600;
+}
+
+.np-register__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-register__actions .np-button {
+  flex: 1 1 140px;
+}

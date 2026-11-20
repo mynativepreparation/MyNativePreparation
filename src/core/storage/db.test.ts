@@ -1,6 +1,7 @@
 // @vitest-environment node
 // Schema tests. They use private database names so the shared "np-local" database is never touched.
 import { describe, expect, it } from 'vitest';
+import Dexie from 'dexie';
 import { DB_NAME, LocalDb } from './db';
 
 describe('LocalDb', () => {
@@ -23,6 +24,34 @@ describe('LocalDb', () => {
       expect(attemptIndexes).toEqual(expect.arrayContaining(['courseId', 'testId', 'at']));
     } finally {
       await d.delete();
+    }
+  });
+
+  it('upgrades from the readable v1 schema: old personal rows are deleted, settings are kept', async () => {
+    const name = 'np-test-upgrade';
+    const old = new Dexie(name);
+    old.version(1).stores({
+      profile: 'id',
+      readProgress: '[courseId+blockId], courseId',
+      attempts: '++id, courseId, testId, at',
+      kv: 'key',
+    });
+    await old.open();
+    await old.table('profile').put({ id: 'me', name: 'Old Readable Name' });
+    await old.table('readProgress').put({ courseId: 'c', blockId: 'b', readAt: 1 });
+    await old.table('attempts').add({ courseId: 'c', testId: 't', asked: 1, correct: 1, percent: 100, stars: 5, at: 1 });
+    await old.table('kv').put({ key: 'np.theme', value: 'dark' });
+    old.close();
+
+    const upgraded = new LocalDb(name);
+    try {
+      await upgraded.open();
+      expect(await upgraded.profile.count()).toBe(0);
+      expect(await upgraded.readProgress.count()).toBe(0);
+      expect(await upgraded.attempts.count()).toBe(0);
+      expect((await upgraded.kv.get('np.theme'))?.value).toBe('dark');
+    } finally {
+      await upgraded.delete();
     }
   });
 

@@ -1,0 +1,28 @@
+.np-fingerprint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-fingerprint > h1,
+.np-fingerprint > p {
+  margin: 0;
+}
+
+.np-fingerprint__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--np-space-3);
+}
+
+.np-fingerprint__notice p {
+  margin: 0;
+}
+
+/* buttons wrap on a 360 px phone instead of scrolling sideways */
+.np-fingerprint__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}

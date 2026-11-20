@@ -1,3 +1,10 @@
+/* cards in the Settings screen stack with a gap */
+.np-settings__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
 .np-settings__modes {
   display: flex;
   flex-wrap: wrap;

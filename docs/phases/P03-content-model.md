@@ -1,4 +1,4 @@
-# P03 — Content model: course/block/test schema, manifest, stable IDs, sample course, local DB   [ACTIVE]
+# P03 — Content model: course/block/test schema, manifest, stable IDs, sample course, local DB   [DONE]
 
 Working method (DECISIONS Q15): Claude writes all files; the owner runs commands only via `.\run.cmd <script>.ps1`;
 Claude reads `logs\last-run.txt`. Folder has spaces: always quote paths.
@@ -75,8 +75,8 @@ Encryption of this data is P04's job; the schema must make it possible to wrap r
 - [x] T11 Run `.\run.cmd check.ps1` (types, boundaries, lint, all tests) and fix until exit 0. Fix the boundary rule if the new `core/content` or `core/storage` folders need entries.
 - [x] T12 Final run: `.\run.cmd build.ps1` exit 0; JS <= 250 KB gzip (expect about +25 KB for Dexie); exactly one folder in `builds\`.
       Check that `dist\content\` is copied into the build (the sample course must be in the build).
-- [ ] T13 Cleanup (AGENTS.md "Phase end checklist") and commit through `scripts/p03-commit.ps1` (message `P03: content model, sample course, local DB`).
-- [ ] T14 Update `PROGRESS.md` (P03 DONE, P04 ACTIVE), write `docs/done/P03-summary.md` (5 lines), create the detailed `P04` file
+- [x] T13 Cleanup (AGENTS.md "Phase end checklist") and commit through `scripts/p03-commit.ps1` (message `P03: content model, sample course, local DB`).
+- [x] T14 Update `PROGRESS.md` (P03 DONE, P04 ACTIVE), write `docs/done/P03-summary.md` (5 lines), create the detailed `P04` file
       (identity: 12-word key with `@scure/bip39`, register/login, onboarding screens, encrypted local store), tell the owner in Gujarati.
       Before choosing the P04 crypto details, search the web for current WebCrypto + bip39 guidance and note the result in `docs/DECISIONS.md`.
 
@@ -109,3 +109,5 @@ Encryption of this data is P04's job; the schema must make it possible to wrap r
 - 2026-11-18 Claude: T11 done: check.ps1 exit 0 (typecheck, boundaries 57 files, lint, 207 tests in 16 files); no boundary-rule change needed beyond rule 4. Next: T12, owner runs `.\run.cmd build.ps1`; Claude then reads the log (JS gzip size) and lists dist\content and builds\.
 - 2026-11-18 Claude: T12 done: build.ps1 exit 0; JS 331.41 kB raw / 105.39 kB gzip (limit 250), CSS 2.16 kB gzip; precache 7 entries (340.73 KiB); builds\ has exactly one folder (web-0.1.0-20261118-1422); content\manifest.json and courses\crs-sci00001 + crs-empty001 are in the build. Note: gzip is unchanged from P02 because no screen imports the loader or Dexie yet (tree-shaken); the real Dexie cost (about +25 KB) will show when P04/P05 import repo.ts. Note: the content JSON files are not in the service-worker precache (offline caching of content is P11's job).
 - 2026-11-18 Claude: T13 script written, NOT yet run: scripts/p03-commit.ps1 (checks .gitignore, removes .gitkeep placeholders in folders that now have files (src/core/storage/.gitkeep), looks for console.log/debugger, counts builds\, prints `npm audit --omit=dev` for information (answers the T1 note about 20 vulnerabilities, does not stop the commit), commits `P03: content model, sample course, local DB`). Next: owner runs `.\run.cmd p03-commit.ps1`; if exit 0, tick T13 and do T14 (PROGRESS.md, docs/done/P03-summary.md, P04 file after a web search for WebCrypto + bip39 guidance).
+- 2026-11-18 Claude: T13 done: p03-commit.ps1 exit 0, commit 835ce6a `P03: content model, sample course, local DB` (38 files). Removed src/core/storage/.gitkeep; no console.log/debugger; builds\ has 1 folder; `npm audit --omit=dev` found 0 vulnerabilities in runtime dependencies (the 20 reported earlier are in dev tools only; review in P14). Next: T14 (read docs/DECISIONS.md and the SPEC identity section, web search for WebCrypto + bip39, write P04 file, PROGRESS.md, docs/done/P03-summary.md).
+- 2026-11-18 Claude: T14 done: web search on @scure/bip39 and WebCrypto AES-GCM/HKDF guidance noted in DECISIONS ("Verified facts" + three "P04 (planned)" decisions + Q16 OPEN with default); docs/phases/P04-identity.md written (T1-T17); docs/done/P03-summary.md written; PROGRESS.md now P03 DONE, P04 ACTIVE. P03 is complete. Next: P04 T1 (write scripts/p04-install.ps1).

@@ -1,0 +1,45 @@
+.np-passphrase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-passphrase__title {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+}
+
+.np-passphrase__title svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-passphrase__body,
+.np-passphrase__warn,
+.np-passphrase__error {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-passphrase__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-passphrase__warn,
+.np-passphrase__error {
+  font-weight: 600;
+}
+
+.np-passphrase__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-passphrase__actions .np-button {
+  flex: 1 1 140px;
+}

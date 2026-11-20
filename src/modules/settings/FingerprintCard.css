@@ -1,0 +1,55 @@
+.np-fingerprint-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-fingerprint-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+}
+
+.np-fingerprint-card__title svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-fingerprint-card__body,
+.np-fingerprint-card__state,
+.np-fingerprint-card__alert {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-fingerprint-card__state {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--np-space-2);
+}
+
+.np-fingerprint-card__state svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-fingerprint-card__alert {
+  font-weight: 600;
+}
+
+.np-fingerprint-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-fingerprint-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-fingerprint-card__actions .np-button {
+  flex: 1 1 140px;
+}

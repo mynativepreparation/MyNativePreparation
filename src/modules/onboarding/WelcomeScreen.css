@@ -1,0 +1,60 @@
+.np-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-5);
+  padding-top: var(--np-space-5);
+  padding-bottom: var(--np-space-5);
+}
+
+.np-welcome__hero {
+  text-align: center;
+}
+
+.np-welcome__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--np-touch) * 2);
+  height: calc(var(--np-touch) * 2);
+  margin-bottom: var(--np-space-4);
+  border-radius: var(--np-radius-pill);
+  color: var(--np-color-accent);
+  box-shadow: var(--np-shadow-raised);
+}
+
+.np-welcome__eyebrow {
+  margin: 0 0 var(--np-space-1);
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  font-weight: 600;
+}
+
+.np-welcome__tagline {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* two cards side by side when there is room, stacked on a narrow phone (360 px) */
+.np-welcome__choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: var(--np-space-4);
+}
+
+.np-welcome__choice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-welcome__choice .np-button {
+  width: 100%;
+}
+
+.np-welcome__hint {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  overflow-wrap: anywhere;
+}
