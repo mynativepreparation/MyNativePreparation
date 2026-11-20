@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LoadedCourse } from '../core/content/loader';
 import { t } from '../core/i18n';
 import homeModule from '../modules/home';
+import readerModule from '../modules/reader';
 import { Shell } from './Shell';
 
 // The loader is mocked: this file tests that the REAL home routes sit inside the REAL Shell (bottom navigation) and that
@@ -28,7 +29,7 @@ const fullCourse: LoadedCourse = {
 
 function renderAt(path: string) {
   const router = createMemoryRouter(
-    [{ path: '/', element: <Shell />, children: [...homeModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
+    [{ path: '/', element: <Shell />, children: [...homeModule.routes, ...readerModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
     { initialEntries: [path] },
   );
   return render(<RouterProvider router={router} />);
@@ -78,7 +79,9 @@ describe('home routes inside the Shell', () => {
       const title = t(`course.tile.${section}`);
       fireEvent.click(screen.getByText(title).closest('button') as HTMLButtonElement);
       expect(await screen.findByRole('heading', { level: 1, name: title })).toBeInTheDocument();
-      expect(screen.getByText(t('course.comingSoon'))).toBeInTheDocument();
+      // Overview and Content are the real reader (P06); Report is still a stand-in until P08.
+      if (section === 'report') expect(screen.getByText(t('course.comingSoon'))).toBeInTheDocument();
+      else expect(await screen.findByText('Hello')).toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
       expect(coursesLink()).toHaveClass('active');
       fireEvent.click(screen.getByRole('button', { name: t('course.backToCourse') }));

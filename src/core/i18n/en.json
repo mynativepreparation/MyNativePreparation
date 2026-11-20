@@ -192,5 +192,15 @@
   "course.tile.test.sub": "Check what you know",
   "course.tile.report": "Report",
   "course.tile.report.sub": "See your progress",
-  "course.unavailable": "હાલ આ માહિતી ઉપલબ્ધ નથી, રાહ જુઓ. ટૂંક સમયમાં માહિતી ઉપલબ્ધ થશે"
+  "course.unavailable": "હાલ આ માહિતી ઉપલબ્ધ નથી, રાહ જુઓ. ટૂંક સમયમાં માહિતી ઉપલબ્ધ થશે",
+  "reader.image.open": "Open image",
+  "reader.image.openNamed": "Open image: {alt}",
+  "reader.font.group": "Text size",
+  "reader.font.smaller": "Smaller text",
+  "reader.font.larger": "Larger text",
+  "reader.viewer.label": "Image viewer",
+  "reader.viewer.close": "Close",
+  "reader.viewer.zoomIn": "Zoom in",
+  "reader.viewer.zoomOut": "Zoom out",
+  "reader.viewer.reset": "Reset zoom"
 }

@@ -1,0 +1,25 @@
+.np-font-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--np-space-2);
+}
+
+.np-font-glyph {
+  font-weight: 700;
+  line-height: 1;
+}
+
+.np-font-glyph-small {
+  font-size: var(--np-font-size-sm);
+}
+
+.np-font-glyph-large {
+  font-size: var(--np-font-size-lg);
+}
+
+.np-font-value {
+  min-width: 3.5em;
+  text-align: center;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+}

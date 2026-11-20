@@ -2,7 +2,7 @@
 
 > Short index. Agents: read this + ONLY the ACTIVE phase file. Boot protocol is in `AGENTS.md`.
 
-**Current ACTIVE phase:** P06 — `docs/phases/P06-reader.md` (P05 done, its commit is made by `p05-commit.ps1`; P06 plan written, next: T1 library decision; see NEXT.md)
+**Current ACTIVE phase:** P06 — `docs/phases/P06-reader.md` (P05 closed with commit ccbb2ba; P06 plan written, next: T1 library decision; see NEXT.md)
 **Last updated:** 2026-11-20 by Claude
 
 ## Phases (web-first: PWA is the main product, Android APK is a later wrapper)
@@ -28,4 +28,4 @@
 - 2026-11-18 Claude: P03 closed (commit 835ce6a, 207 tests, build JS 105 KB gzip). P04 detailed plan written after web search (bip39 + WebCrypto); Q16 open with a default. Next: P04 T1 (install @scure/bip39 via script).
 - 2026-11-19 Claude: P04 T12c (PIN lock) and T12d (fingerprint + PIN together: a good fingerprint opens the app alone, otherwise the PIN screen) done; owner tested on his phone. 634 tests green.
 - 2026-11-20 Claude: P04 T14-T16 done: docs/IDENTITY.md, build JS 163.4 KB gzip, cleanup, `npm audit` 0 vulnerabilities, 632 tests green.
-- 2026-11-20 Claude: P05 T1-T8 done: Home + Course screens, 6 routes, layout guard, owner visual check "all good", 678 tests green, build JS 165.40 KB gzip. P06 detailed plan written (docs/phases/P06-reader.md, 9 tasks). Next: owner runs p05-commit.ps1, then P06 T1.
+- 2026-11-20 Claude: P05 T1-T8 done: Home + Course screens, 6 routes, layout guard, owner visual check "all good", 678 tests green, build JS 165.40 KB gzip. P06 detailed plan written (docs/phases/P06-reader.md, 9 tasks). P05 closed (commit ccbb2ba on master). Next: P06 T1 (library decision).

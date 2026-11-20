@@ -1,0 +1,77 @@
+/* Reader screen (P06 T6): one fixed-width column, no sideways scrolling at any width. */
+.np-reader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  width: 100%;
+  max-width: var(--np-content-max);
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.np-reader__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--np-space-2);
+}
+
+.np-reader__course {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.np-reader__title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-reader__card {
+  min-width: 0;
+}
+
+/* The text area: pinch (two fingers) changes the font size, one finger still scrolls the page. */
+.np-reader__area {
+  min-width: 0;
+  touch-action: pan-y;
+  overflow-wrap: anywhere;
+  animation: np-reader-fade var(--np-motion-medium) var(--np-ease);
+}
+
+@keyframes np-reader-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.np-reader__message {
+  min-width: 0;
+}
+
+.np-reader__skeleton {
+  min-height: calc(var(--np-space-5) * 4);
+}
+
+.np-reader__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Visually hidden, still read aloud (loading status). */
+.np-reader__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
