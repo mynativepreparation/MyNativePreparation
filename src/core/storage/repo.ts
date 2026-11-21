@@ -52,6 +52,12 @@ interface ProgressDetails {
   readAt: number;
 }
 
+/**
+ * Reserved "block id" that records "this course was opened" (Overview or Content, P08). It can never equal a real block id
+ * (those look like `blk-xxxxxxxx`), and `getReadBlocks` leaves it out, so it never counts as a read block.
+ */
+export const OPENED_MARK = '@opened';
+
 /** Marks a block as read. Marking it again only updates `readAt`. */
 export async function markBlockRead(
   courseId: string,
@@ -66,7 +72,9 @@ export async function markBlockRead(
 /** Ids of the blocks read in a course, oldest first. Empty array when nothing was read. */
 export async function getReadBlocks(courseId: string): Promise<string[]> {
   const key = getStoreKey();
-  const rows = await db.readProgress.where('courseId').equals(courseId).toArray();
+  const rows = (await db.readProgress.where('courseId').equals(courseId).toArray()).filter(
+    (row) => row.blockId !== OPENED_MARK,
+  );
   const items = await Promise.all(
     rows.map(async (row) => {
       const details = await decryptJson<ProgressDetails>(key, row.blob, progressAad(row.courseId, row.blockId));
@@ -75,6 +83,21 @@ export async function getReadBlocks(courseId: string): Promise<string[]> {
   );
   items.sort((a, b) => a.readAt - b.readAt || a.blockId.localeCompare(b.blockId));
   return items.map((item) => item.blockId);
+}
+
+/** Records that the Overview or the Content of a course was opened (P08). Opening again only updates the time. */
+export async function markCourseOpened(courseId: string, openedAt: number = Date.now()): Promise<void> {
+  await markBlockRead(courseId, OPENED_MARK, openedAt);
+}
+
+/**
+ * Ids of the courses that were opened at least once (a stored "opened" mark or any read block), sorted, no duplicates.
+ * Empty array when none. Rejects with `LockedError` while nobody is logged in.
+ */
+export async function getOpenedCourseIds(): Promise<string[]> {
+  getStoreKey();
+  const keys = await db.readProgress.orderBy('courseId').uniqueKeys();
+  return keys.filter((key): key is string => typeof key === 'string');
 }
 
 // ---------- test attempts ----------

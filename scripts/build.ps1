@@ -9,7 +9,7 @@ Write-Host ">>> Build" -ForegroundColor Cyan
 npm run build
 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed." -ForegroundColor Red; exit 1 }
 
-Write-Host ">>> JS size (budget 250 KB gzip, DECISIONS Q14)" -ForegroundColor Cyan
+Write-Host ">>> JS size (budget 800 KB gzip, DECISIONS Q22; the limit itself is in js-size.ps1)" -ForegroundColor Cyan
 & ".\scripts\js-size.ps1"
 if ($LASTEXITCODE -ne 0) { Write-Host "JS is over the budget - build not saved." -ForegroundColor Red; exit 1 }
 

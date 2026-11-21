@@ -1,9 +1,9 @@
 # js-size.ps1 - prints the gzip size of every JS file in dist\assets and the total.
-# Exit 1 when the total is over the budget of 250 KB gzip (DECISIONS Q14). Needs a finished build (dist\).
+# Exit 1 when the total is over the budget of 800 KB gzip (DECISIONS Q14; 250 -> 600 KB in Q20; 600 -> 800 KB in Q22, the PDF chunk alone is 515 KB). Needs a finished build (dist\).
 # Run:  .\run.cmd js-size.ps1     (build.ps1 calls it too)
 # Note: measured with .NET GZip; Vite's own numbers can differ by a few percent.
 
-$limitKb = 250
+$limitKb = 800
 if (-not (Test-Path 'dist\assets')) {
   Write-Host "dist\assets not found - build first (.\run.cmd build.ps1)." -ForegroundColor Red
   exit 1

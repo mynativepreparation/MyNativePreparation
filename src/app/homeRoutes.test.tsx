@@ -5,6 +5,7 @@ import type { LoadedCourse } from '../core/content/loader';
 import { t } from '../core/i18n';
 import homeModule from '../modules/home';
 import readerModule from '../modules/reader';
+import reportModule from '../modules/report';
 import testGameModule from '../modules/test-game';
 import { Shell } from './Shell';
 
@@ -30,7 +31,7 @@ const fullCourse: LoadedCourse = {
 
 function renderAt(path: string) {
   const router = createMemoryRouter(
-    [{ path: '/', element: <Shell />, children: [...homeModule.routes, ...readerModule.routes, ...testGameModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
+    [{ path: '/', element: <Shell />, children: [...homeModule.routes, ...readerModule.routes, ...reportModule.routes, ...testGameModule.routes, { path: 'settings', element: <p>SETTINGS SCREEN</p> }] }],
     { initialEntries: [path] },
   );
   return render(<RouterProvider router={router} />);
@@ -73,21 +74,40 @@ describe('home routes inside the Shell', () => {
     expect(settingsLink()).not.toHaveClass('active');
   });
 
-  it('every tile route renders a screen inside the Shell, and Back returns to the course', async () => {
+  it('the Overview and Content tiles render the real reader inside the Shell, and Back returns to the course', async () => {
     renderAt(`/course/${ID}`);
     await screen.findByRole('heading', { level: 1, name: 'General Science' });
-    for (const section of ['overview', 'content', 'report'] as const) {
+    for (const section of ['overview', 'content'] as const) {
       const title = t(`course.tile.${section}`);
       fireEvent.click(screen.getByText(title).closest('button') as HTMLButtonElement);
       expect(await screen.findByRole('heading', { level: 1, name: title })).toBeInTheDocument();
-      // Overview and Content are the real reader (P06); Report is still a stand-in until P08.
-      if (section === 'report') expect(screen.getByText(t('course.comingSoon'))).toBeInTheDocument();
-      else expect(await screen.findByText('Hello')).toBeInTheDocument();
+      // Overview and Content are the real reader (P06).
+      expect(await screen.findByText('Hello')).toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
       expect(coursesLink()).toHaveClass('active');
       fireEvent.click(screen.getByRole('button', { name: t('course.backToCourse') }));
       await screen.findByRole('heading', { level: 1, name: 'General Science' });
     }
+  });
+
+  it('the Report tile opens the real report screen (P08) inside the Shell, and Back returns to the course', async () => {
+    renderAt(`/course/${ID}`);
+    await screen.findByRole('heading', { level: 1, name: 'General Science' });
+    fireEvent.click(screen.getByText(t('course.tile.report')).closest('button') as HTMLButtonElement);
+    expect(await screen.findByRole('heading', { level: 1, name: t('report.title') })).toBeInTheDocument();
+    expect(screen.queryByText(t('course.comingSoon'))).not.toBeInTheDocument(); // the stand-in is gone
+    expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
+    expect(coursesLink()).toHaveClass('active');
+    fireEvent.click(screen.getByRole('button', { name: t('report.back') }));
+    await screen.findByRole('heading', { level: 1, name: 'General Science' });
+  });
+
+  it('no two modules register the same route path', () => {
+    const paths = [homeModule, readerModule, reportModule, testGameModule]
+      .flatMap((m) => m.routes)
+      .map((r) => r.path)
+      .filter((p): p is string => p !== undefined);
+    expect(new Set(paths).size).toBe(paths.length);
   });
 
   it('the Test route is the real test game (P07); a course without a test shows the not-available state, opened by address', async () => {

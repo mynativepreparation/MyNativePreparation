@@ -1,0 +1,7 @@
+# P07 summary — DONE 2026-11-20
+
+- Test game (`src/modules/test-game/`): intro, one question at a time with 4 shuffled options (pure `engine.ts`, seeded rng in tests), instant feedback (icon + text, never colour only) with the optional explanation, running score, result with 1-5 stars and a cheer message, Play again / Back to course / Report; leaving halfway asks for confirmation and saves nothing; keys 1-4 / A-D and Enter.
+- Percent and stars come only from `core/content/scoring.ts`; `repo.addAttempt` runs exactly once per finished game (guard test); `deleteSetting` was added to `repo.ts`.
+- No new dependency (DECISIONS Q18): own Web Audio synth `sound.ts` (mute remembered in `np.test.sound`) and own canvas `confetti.ts` (3+ stars, skipped under reduced motion); `StarRating` extended with `animate` / `tone="star"`; new `star` colour token; CSS-only animation with the motion tokens.
+- 967 tests green; layout checks at 360 / 768 / 1366 px; owner visual check OK on PC and phone (the wrong-answer sound was made louder after the owner's report; the silent laptop was an old cached build, `registerType: 'prompt'`); commit `f18dbaa`; `npm audit --omit=dev` = 0.
+- Build JS 183.61 KB gzip (budget 250 KB: `index` 181.45 + `workbox-window` 2.16). Incident: `sessionStore.ts` was deleted by mistake and restored by `scripts/p07-restore.ps1` — never delete a file only because it looks unused.

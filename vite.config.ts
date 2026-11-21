@@ -9,6 +9,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt', // the app asks the user before switching to a new version
+      // the default precache is js, css and html; the report fonts (public/fonts/*.woff, P08) must be cached too, so the PDF works offline
+      workbox: { globPatterns: ['**/*.{js,css,html,woff}'] },
       manifest: {
         name: 'My Native Preparation',
         short_name: 'NativePrep',

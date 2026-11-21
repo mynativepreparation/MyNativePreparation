@@ -1,0 +1,4 @@
+﻿Noto Sans Gujarati - font files for the Report PDF (P08).
+Source: npm package @fontsource/noto-sans-gujarati version 5.3.0 (published 2026-07-19), downloaded 2026-11-20.
+Licence: SIL Open Font License 1.1, full text in NotoSansGujarati-OFL.txt (it names the copyright holders).
+Subsets: gujarati and latin. Weights: 400 and 700. Formats: woff2 and woff.

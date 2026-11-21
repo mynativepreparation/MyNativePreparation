@@ -1,0 +1,149 @@
+.np-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  width: 100%;
+  max-width: var(--np-content-max);
+  margin: 0 auto;
+}
+
+.np-report__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--np-space-3);
+}
+
+.np-report__title {
+  margin: 0;
+  font-size: var(--np-font-size-xl);
+  overflow-wrap: anywhere;
+}
+
+/* "All courses" / "This course": two equal buttons side by side */
+.np-report__scope {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--np-space-3);
+}
+
+.np-report__scope .np-button {
+  width: 100%;
+  max-width: 100%;
+}
+
+.np-report__skeleton {
+  min-height: calc(var(--np-touch) * 3);
+}
+
+.np-report__empty {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  text-align: center;
+}
+
+/* Totals: three numbers in a row (they wrap on a narrow screen) */
+.np-report__totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-4);
+  margin: 0;
+}
+
+.np-report__total {
+  flex: 1 1 calc(var(--np-touch) * 3);
+  min-width: 0;
+  text-align: center;
+}
+
+.np-report__total dt {
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.np-report__total dd {
+  margin: 0;
+  font-size: var(--np-font-size-xxl);
+  font-weight: 700;
+}
+
+/* One card per course */
+.np-report__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.np-report__course {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-2);
+}
+
+.np-report__course-title {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  overflow-wrap: anywhere;
+}
+
+.np-report__line {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-report__caption {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+}
+
+/* File name + Create PDF / Save */
+.np-report__make {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
+.np-report__make .np-button {
+  width: 100%;
+  max-width: 100%;
+}
+
+.np-report__error {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  text-align: center;
+}
+
+.np-report__error-text {
+  margin: 0;
+}
+
+.np-report__error .np-button {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* The live region: busy, ready and saved messages (also announced to screen readers) */
+.np-report__status {
+  margin: 0;
+  color: var(--np-color-text-muted);
+  font-size: var(--np-font-size-sm);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.np-report__actions {
+  display: grid;
+  gap: var(--np-space-3);
+}
+
+.np-report__actions .np-button {
+  width: 100%;
+  max-width: 100%;
+}

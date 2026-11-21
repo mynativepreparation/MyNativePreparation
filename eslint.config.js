@@ -3,7 +3,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default [
-  { ignores: ['dist', 'dev-dist', 'builds', 'logs', 'node_modules'] },
+  { ignores: ['dist', 'dev-dist', 'builds', 'logs', 'node_modules', 'scripts/p08-spike'] }, // the P08 spike is throw-away (deleted in T10)
   js.configs.recommended,
   ...tseslint.configs.recommended,
   { languageOptions: { globals: { ...globals.browser } } },

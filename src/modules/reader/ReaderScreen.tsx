@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { loadCourse } from '../../core/content/loader';
 import type { Block } from '../../core/content/types';
 import { t } from '../../core/i18n';
+import { markCourseOpened } from '../../core/storage/repo';
 import { Button, Card, NotAvailable } from '../../core/ui';
 import { BlockView, type OpenedImage } from './BlockView';
 import { FontControls } from './FontControls';
@@ -47,7 +48,11 @@ export function ReaderScreen({ section }: { section: ReaderSection }) {
   useEffect(() => {
     let cancelled = false;
     void readSection(courseId, section).then((view) => {
-      if (!cancelled) setResult({ key, view });
+      if (cancelled) return;
+      setResult({ key, view });
+      // P08: remember that the course was opened (the report says "opened", not "finished"). Never blocks or breaks reading:
+      // a locked store or a missing database only means the course is not counted.
+      if (view !== null) void markCourseOpened(courseId).catch(() => undefined);
     });
     return () => {
       cancelled = true;
