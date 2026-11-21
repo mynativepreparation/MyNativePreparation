@@ -6,6 +6,7 @@ import './core/ui/base.css';
 import { initTheme } from './core/theme/theme';
 import { router } from './app/router';
 import { UpdatePrompt } from './app/UpdatePrompt';
+import { UpdateRegistrar } from './core/update/UpdateRegistrar';
 
 // Theme first, so the first paint already has the right colors.
 initTheme();
@@ -13,6 +14,7 @@ initTheme();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <UpdateRegistrar />
     <UpdatePrompt />
   </StrictMode>,
 );

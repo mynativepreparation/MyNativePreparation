@@ -1,10 +1,13 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import pkg from './package.json';
 
 // VITE_BASE is '/my-native-preparation/' when deployed to GitHub Pages, '/' otherwise.
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
+  // The app version for the About card (P09): one source, package.json. Vitest reads this config too, so tests see it as well.
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
     react(),
     VitePWA({

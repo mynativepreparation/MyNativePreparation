@@ -1,0 +1,35 @@
+.np-about {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-about__title {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+}
+
+.np-about__title svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-about__name,
+.np-about__text,
+.np-about__heading {
+  margin: 0;
+  /* long words and package names wrap instead of pushing the card wider */
+  overflow-wrap: anywhere;
+}
+
+.np-about__name {
+  font-size: var(--np-font-size-lg);
+  font-weight: 700;
+}
+
+.np-about__heading {
+  font-size: var(--np-font-size-base);
+  font-weight: 700;
+}

@@ -1,0 +1,43 @@
+.np-profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-profile__title {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+}
+
+.np-profile__title svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-profile__body,
+.np-profile__loading,
+.np-profile__error,
+.np-profile__status {
+  margin: 0;
+  /* long Gujarati names and addresses wrap instead of pushing the card wider */
+  overflow-wrap: anywhere;
+}
+
+.np-profile__error,
+.np-profile__status {
+  font-weight: 600;
+}
+
+.np-profile__form,
+.np-profile__problem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+/* The live region stays in the page (so screen readers hear changes) but takes no room while it is empty. */
+.np-profile__status:empty {
+  margin-top: calc(var(--np-space-3) * -1);
+}

@@ -1,22 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from '../../core/i18n';
+import { buildProfile, EMAIL_SHAPE } from '../../core/identity/profileInput';
 import { AUTH_ROUTES } from '../../core/identity/status';
-import { saveProfile, type Profile } from '../../core/storage/repo';
+import { saveProfile } from '../../core/storage/repo';
 import { Button, TextField } from '../../core/ui';
 import './InfoScreen.css';
-
-// Light check only: something@something.something with no spaces. Real validation is impossible without sending mail.
-const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/** Keeps only the fields the person really filled in (trimmed). Empty fields are left out of the profile. */
-function buildProfile(name: string, email: string, phone: string): Profile {
-  const profile: Profile = {};
-  if (name.trim()) profile.name = name.trim();
-  if (email.trim()) profile.email = email.trim();
-  if (phone.trim()) profile.phone = phone.trim();
-  return profile;
-}
 
 // Basic info (P04 T9): name, email and phone are ALL optional. Skip goes on without saving anything.
 // Save writes through repo.saveProfile (encrypted there); the app works the same without these details.

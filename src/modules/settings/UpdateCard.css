@@ -1,0 +1,42 @@
+.np-update {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-update__title {
+  display: flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  margin: 0;
+}
+
+.np-update__title svg {
+  flex: none;
+  color: var(--np-color-accent);
+}
+
+.np-update__body,
+.np-update__status {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-update__status {
+  font-weight: 600;
+}
+
+/* The live region stays in the page (so screen readers hear changes) but takes no room while it is empty. */
+.np-update__status:empty {
+  margin-top: calc(var(--np-space-3) * -1);
+}
+
+.np-update__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-update__actions .np-button {
+  flex: 1 1 140px;
+}

@@ -13,6 +13,7 @@ Only Claude + Windows PowerShell/cmd. NO IDE, NO other agent (Kilo, VSCodium, et
 
 ## How to resume (works for any agent / IDE / login / machine)
 0. Read `NEXT.md` (about 20 lines: exact state and next step). TOKEN SAVING: never read a big file (>10 KB) whole; use head/tail; never re-read files the Log says were reviewed.
+   RECOVERY: the owner uses several Claude accounts one after another (a new one starts when tokens run out); sessions NEVER run in parallel. A file newer than NEXT.md (see `get_file_info`) is unfinished work of the cut-off session: read its head, compare with the phase tasks, finish/verify it (a newer `logs\last-run.txt` with CHECK OK = verified), log it as "recovered". Never stop to ask about it. Before a task that touches 2+ files write `IN PROGRESS: <task> - files: ...` in NEXT.md; remove it when done. The ready-to-paste start prompt is `START-PROMPT.txt`.
 1. Read `PROGRESS.md` (short index). Find the phase marked `ACTIVE`.
 2. Read ONLY that phase file in `docs/phases/`. Do NOT read other phase files or the whole spec.
    Read a section of `docs/SPEC.md` only if the phase file points you to it (by REQ id).
