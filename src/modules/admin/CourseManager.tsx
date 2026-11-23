@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
-import { EyeOff, Pencil, Plus, RotateCcw, Trash2, Upload } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ClipboardList, EyeOff, Pencil, Plus, RotateCcw, Trash2, Upload } from 'lucide-react';
 import type { DraftRecord, DraftStore, StoreCode } from '../../core/admin/draftStore';
 import { createCourseDraft, type CourseDraft } from '../../core/admin/model';
+import { pruneImages } from '../../core/admin/pruneImages';
+import type { Test } from '../../core/content/types';
 import { t, tf, type TextKey } from '../../core/i18n';
 import { Button, Card } from '../../core/ui';
 import { CourseWorkspace } from './CourseWorkspace';
 import { PublishedCourses } from './PublishedCourses';
+import { TestManager } from './TestManager';
+import { TestWindow } from './TestWindow';
+import { testName } from './testName';
 import './CourseManager.css';
 
 // Course list + course form (P10 T6, SPEC D2/D5). The list comes from the draft store (drafts kept in this browser).
@@ -44,6 +49,12 @@ export function CourseManager({ store }: { store: DraftStore }) {
   const [saved, setSaved] = useState(false);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // The test list of ONE course (Q27, T11s): `testsOf` is that course's draft as stored. Back and a delete read the course list again.
+  const [testsOf, setTestsOf] = useState<CourseDraft | null>(null);
+  const [testNote, setTestNote] = useState<string | null>(null);
+  // The test window (T11t): which test is open (`null` = a new one). `key` is new for every opening, so a new test starts empty.
+  const [testWindow, setTestWindow] = useState<{ testId: string | null; key: number } | null>(null);
+  const windowCount = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,6 +110,73 @@ export function CourseManager({ store }: { store: DraftStore }) {
     }
   }
 
+  function onGenerate(record: DraftRecord) {
+    setSaved(false);
+    setError(null);
+    setNotice(null);
+    setTestNote(null);
+    setTestsOf(record.draft);
+  }
+
+  /** Back from the test list to the course list (read again: a test may have been deleted). */
+  function closeTests() {
+    setTestsOf(null);
+    setTestNote(null);
+    setError(null);
+    setReloadKey((k) => k + 1);
+  }
+
+  /** Edit (an id) and Generate new test (`null`) open the test window of the open course. */
+  function openTest(testId: string | null) {
+    setError(null);
+    setTestNote(null);
+    windowCount.current += 1;
+    setTestWindow({ testId, key: windowCount.current });
+  }
+
+  /** Back from the test window to the test list (the list shows what was saved). */
+  function closeTestWindow() {
+    setTestWindow(null);
+    setTestNote(null);
+    setError(null);
+  }
+
+  /** Save from the test window: the whole course draft, minus pictures nobody uses. The window stays open for more questions. */
+  async function saveTest(draft: CourseDraft, saved: Test) {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const result = await store.put({ ...draft, images: pruneImages(draft) });
+    setBusy(false);
+    if (result.ok) {
+      setTestsOf(result.value.draft);
+      const index = result.value.draft.tests.findIndex((test) => test.id === saved.id);
+      setTestNote(tf('admin.testWindow.saved', { name: testName(saved, Math.max(index, 0)) }));
+    } else {
+      setError(STORE_ERROR_TEXT[result.code]);
+    }
+  }
+
+  /** Delete one test of the open course (TestManager asked first): a normal Save of the draft, minus the pictures only that test used. */
+  async function deleteTest(testId: string) {
+    if (busy || testsOf === null) return;
+    const index = testsOf.tests.findIndex((test) => test.id === testId);
+    const gone = testsOf.tests[index];
+    if (gone === undefined) return;
+    const name = testName(gone, index);
+    setBusy(true);
+    setError(null);
+    const rest: CourseDraft = { ...testsOf, tests: testsOf.tests.filter((test) => test.id !== testId) };
+    const result = await store.put({ ...rest, images: pruneImages(rest) });
+    setBusy(false);
+    if (result.ok) {
+      setTestsOf(result.value.draft);
+      setTestNote(tf('admin.tests.deletedDone', { name }));
+    } else {
+      setError(STORE_ERROR_TEXT[result.code]);
+    }
+  }
+
   /** A published course loaded for editing: like "Add", it is not stored until Save. */
   function onLoaded(draft: CourseDraft) {
     setSaved(false);
@@ -120,6 +198,35 @@ export function CourseManager({ store }: { store: DraftStore }) {
     } else {
       setError(STORE_ERROR_TEXT[result.code]);
     }
+  }
+
+  if (testsOf !== null && testWindow !== null) {
+    return (
+      <TestWindow
+        key={testWindow.key}
+        draft={testsOf}
+        testId={testWindow.testId}
+        busy={busy}
+        note={testNote}
+        error={error}
+        onSave={(draft, saved) => void saveTest(draft, saved)}
+        onBack={closeTestWindow}
+      />
+    );
+  }
+
+  if (testsOf !== null) {
+    return (
+      <TestManager
+        draft={testsOf}
+        busy={busy}
+        note={testNote}
+        error={error}
+        onBack={closeTests}
+        onOpenTest={openTest}
+        onDeleteTest={(id) => void deleteTest(id)}
+      />
+    );
   }
 
   if (editing !== null) {
@@ -226,6 +333,15 @@ export function CourseManager({ store }: { store: DraftStore }) {
                         }}
                       >
                         {t('admin.courses.delete')}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        icon={<ClipboardList size={20} aria-hidden="true" />}
+                        aria-label={tf('admin.courses.generateNamed', { title })}
+                        disabled={busy}
+                        onClick={() => onGenerate(record)}
+                      >
+                        {t('admin.courses.generate')}
                       </Button>
                       <Button
                         variant="secondary"

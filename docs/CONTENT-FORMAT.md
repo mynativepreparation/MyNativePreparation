@@ -12,7 +12,8 @@ public/content/
     course.json                     required: the card shown on Home
     overview.json                   optional: blocks
     content.json                    optional: blocks
-    test.json                       optional: the test
+    test.json                       optional, the OLD single test (still read; the editor no longer writes it)
+    tests/<tst-id>.json             optional: one file per test, any number (P10 T11r)
     images/<name>.svg|webp|...      any images used by blocks, cover or test
 ```
 
@@ -128,6 +129,14 @@ Every font is drawn together with Noto Sans Gujarati, so Gujarati letters still 
 - A test with no questions means "not available".
 - Stars (DECISIONS Q6) from percent = round(correct / asked x 100): 90+ = 5, 75+ = 4, 60+ = 3, 40+ = 2, otherwise 1.
 
+## tests/<tst-id>.json (several tests per course, DECISIONS Q27)
+
+A course may have any number of tests. Each test is ONE file, `tests/<tst-id>.json` inside the course folder, with exactly the shape of `test.json` above. The file name must be the test id (`tests/tst-sci00001.json` holds the test with `"id": "tst-sci00001"`); a mismatch, or the same test id twice in one course, is an error.
+
+- The editor writes only `tests/<id>.json` (a test without questions is not written) and no longer writes `test.json`. Old courses that still have `test.json` stay valid: it counts as one test and is read before the files in `tests/`.
+- The manifest `files` lists `courses/<id>/tests/<tst-id>.json` like every other file. `testFiles.ts` has the helpers (`testFilePath`, `testIdFromPath`, `testFilesOf`) and `loader.ts` `loadCourseTests(courseId, manifestKeys)` reads all tests of a course. `loadCourse().test` still gives only the old `test.json`; the user app moves to the list in T11t.
+- Pictures of a test (`image`) are relative to the course folder, like everywhere else.
+
 ## manifest.json
 
 ```json
@@ -149,4 +158,4 @@ Run `.\run.cmd check.ps1`. The test `sampleContent.test.ts` fails when a file is
 
 ## Where this lives in code
 
-`src/core/content/`: `types.ts` (shapes), `validate.ts` (rules, path-based error messages), `ids.ts`, `hash.ts`, `scoring.ts`, `inline.ts` (the text marks, spans and paragraph boxes), `richStyles.ts` (the catalog of style ids), `loader.ts` (fetch + validate, never throws).
+`src/core/content/`: `types.ts` (shapes), `validate.ts` (rules, path-based error messages), `ids.ts`, `hash.ts`, `scoring.ts`, `inline.ts` (the text marks, spans and paragraph boxes), `richStyles.ts` (the catalog of style ids), `testFiles.ts` (where the test files of a course live), `loader.ts` (fetch + validate, never throws; `loadCourseTests` reads all tests of a course).

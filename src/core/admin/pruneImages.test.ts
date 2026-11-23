@@ -11,7 +11,7 @@ describe('pruneImages', () => {
     draft.course.cover = 'images/1.png';
     draft.overview = [newImageBlock('images/2.png')];
     draft.content = [newTextBlock('text', 'x'), newImageBlock('images/3.png')];
-    draft.test = { ...createTest(), image: 'images/4.png' };
+    draft.tests = [{ ...createTest(), image: 'images/4.png' }];
     draft.images = ['1', '2', '3', '4'].map((n) => img(`images/${n}.png`));
     expect(pruneImages(draft).map((i) => i.path)).toEqual(['images/1.png', 'images/2.png', 'images/3.png', 'images/4.png']);
   });

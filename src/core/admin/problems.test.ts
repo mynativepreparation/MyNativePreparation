@@ -7,7 +7,7 @@ const base = (): CourseDraft => ({
   course: { id: 'crs-aaaaaaaa', title: 'Science', order: 1 },
   overview: [],
   content: [],
-  test: null,
+  tests: [],
   images: [],
 });
 
@@ -26,7 +26,7 @@ const withDraft = (change: Partial<CourseDraft>): CourseDraft => ({ ...base(), .
 describe('summarizeProblems', () => {
   it('gives an empty list for a good draft (also an empty one)', () => {
     expect(summarizeProblems(base())).toEqual([]);
-    const good = withDraft({ overview: [text('a')], content: [text('b')], test: testOf([question('a')]) });
+    const good = withDraft({ overview: [text('a')], content: [text('b')], tests: [testOf([question('a')])] });
     expect(summarizeProblems(good)).toEqual([]);
   });
 
@@ -48,25 +48,25 @@ describe('summarizeProblems', () => {
     ],
     [
       'a question with no text',
-      { test: testOf([question('a', { text: '' })]) },
+      { tests: [testOf([question('a', { text: '' })])] },
       [{ key: 'admin.problem.questionText', n: 1 }],
     ],
     [
       'a question with an empty answer box (two empty boxes are listed once)',
-      { test: testOf([question('a'), question('b', { options: ['', '', 'c', 'd'] })]) },
+      { tests: [testOf([question('a'), question('b', { options: ['', '', 'c', 'd'] })])] },
       [{ key: 'admin.problem.questionOptions', n: 2 }],
     ],
     [
       'a question with 3 answers',
-      { test: testOf([question('a', { options: ['a', 'b', 'c'] as unknown as Question['options'] })]) },
+      { tests: [testOf([question('a', { options: ['a', 'b', 'c'] as unknown as Question['options'] })])] },
       [{ key: 'admin.problem.questionOptions', n: 1 }],
     ],
     [
       'a question whose correct answer is out of range',
-      { test: testOf([question('a', { correctIndex: 4 as unknown as Question['correctIndex'] })]) },
+      { tests: [testOf([question('a', { correctIndex: 4 as unknown as Question['correctIndex'] })])] },
       [{ key: 'admin.problem.questionCorrect', n: 1 }],
     ],
-    ['questions per game 0', { test: testOf([question('a')], 0) }, [{ key: 'admin.problem.perGame' }]],
+    ['questions per game 0', { tests: [testOf([question('a')], 0)] }, [{ key: 'admin.problem.perGame' }]],
     [
       'a cover picture that is not in the draft',
       { course: { id: 'crs-aaaaaaaa', title: 'Science', order: 1, cover: 'images/c.webp' } },
@@ -86,7 +86,7 @@ describe('summarizeProblems', () => {
     const draft = withDraft({
       overview: [text('a', '')],
       content: [text('b', ' ')],
-      test: testOf([question('a', { text: '' }), question('b', { correctIndex: 9 as unknown as Question['correctIndex'] })], 0),
+      tests: [testOf([question('a', { text: '' }), question('b', { correctIndex: 9 as unknown as Question['correctIndex'] })], 0)],
     });
     const problems = summarizeProblems(draft);
     expect(problems).toEqual([

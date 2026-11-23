@@ -45,7 +45,7 @@ describe('loadPublishedDraft', () => {
     expect(d.course).toEqual({ id: ID, title: 'Science', order: 3, cover: 'images/c.png' });
     expect(d.overview).toEqual([imageBlock, textBlock]);
     expect(d.content).toEqual([]);
-    expect(d.test).toEqual(test);
+    expect(d.tests).toEqual([test]);
     expect(d.images.map((i) => [i.path, i.mime])).toEqual([
       ['images/c.png', 'image/png'],
       ['images/p.png', 'image/png'],
@@ -89,7 +89,7 @@ describe('loadPublishedDraft', () => {
       course: { id: ID, title: 'Empty', order: 2 },
       overview: [],
       content: [],
-      test: null,
+      tests: [],
       images: [],
     });
     expect(fetchBytes).not.toHaveBeenCalled();

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { ArrowLeft, BookOpen, ClipboardList, FileText, TrendingUp } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { findCourseTests } from '../../core/content/courseTests';
 import { loadCourse } from '../../core/content/loader';
 import type { CourseCard } from '../../core/content/types';
 import { t, type TextKey } from '../../core/i18n';
@@ -19,17 +20,28 @@ interface CourseView {
   open: Record<Section, boolean>;
 }
 
+/** True when the course has tests in `tests/<id>.json` (P10 T11t d). Never throws: a problem means "no tests". */
+async function hasMoreTests(courseId: string): Promise<boolean> {
+  try {
+    return (await findCourseTests(courseId)).length > 0;
+  } catch {
+    return false;
+  }
+}
+
 /** `null` = the course itself is not available (unknown id, missing or broken course.json). Never throws. */
 async function readCourse(courseId: string): Promise<CourseView | null> {
   try {
     const loaded = await loadCourse(courseId);
     if (loaded.card.state !== 'ready') return null;
+    // The Test tile is open for the old test.json OR for tests found in the manifest (only looked up when test.json is not ready).
+    const hasTest = loaded.test.state === 'ready' || (await hasMoreTests(courseId));
     return {
       card: loaded.card.value,
       open: {
         overview: loaded.overview.state === 'ready',
         content: loaded.content.state === 'ready',
-        test: loaded.test.state === 'ready',
+        test: hasTest,
         report: true,
       },
     };

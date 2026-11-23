@@ -1,6 +1,7 @@
 import { newId } from '../content/ids';
 import type { Block, CourseCard, Question, Test, ValidationResult } from '../content/types';
 import { isSafeRelativePath, validateBlocks, validateCourseCard, validateTest } from '../content/validate';
+import { LEGACY_TEST_FILE, testFilePath, testIdFromPath } from '../content/testFiles';
 
 // The editor's working copy of ONE course (P10, DECISIONS Q24). It has exactly the shape of the files in
 // `public/content/courses/<id>/` (docs/CONTENT-FORMAT.md): every output of `draftToFiles` passes the validators.
@@ -19,8 +20,8 @@ export interface CourseDraft {
   overview: Block[];
   /** Blocks of content.json (an empty array means "not available"). */
   content: Block[];
-  /** test.json; null (or a test without questions) means "not available". */
-  test: Test | null;
+  /** The tests of the course, one file each (`tests/<tst-id>.json`, DECISIONS Q27). A test without questions is kept in the draft but not written. */
+  tests: Test[];
   images: DraftImage[];
 }
 
@@ -51,7 +52,7 @@ export function createCourseDraft(input: { title?: string; order?: number } = {}
     course: { id: newId('crs'), title: input.title ?? '', order: input.order ?? 1 },
     overview: [],
     content: [],
-    test: null,
+    tests: [],
     images: [],
   };
 }
@@ -66,6 +67,26 @@ export function newImageBlock(src: string, alt = ''): Block {
 
 export function createTest(questionsPerGame = 5): Test {
   return { id: newId('tst'), questionsPerGame, questions: [] };
+}
+
+/** The first test of the draft, or null. The one-test window (the old Test part) edits this one until the test list screens (T11s, T11t) take over. */
+export function firstTest(draft: Pick<CourseDraft, 'tests'>): Test | null {
+  return [...draft.tests].shift() ?? null;
+}
+
+/** `tests` with its first test replaced by `test`; `null` removes the first test. The other tests are not touched. */
+export function replaceFirstTest(tests: readonly Test[], test: Test | null): Test[] {
+  const rest = tests.slice(1);
+  return test === null ? rest : [test, ...rest];
+}
+
+/** A draft as an older version of the editor stored it: one optional `test` and no `tests`. */
+export type StoredDraft = Omit<CourseDraft, 'tests'> & { tests?: Test[]; test?: Test | null };
+
+/** Brings a stored draft to the current shape: the old single `test` becomes a list of one. Nothing is lost; a draft that already has `tests` keeps them. */
+export function migrateDraft(stored: StoredDraft): CourseDraft {
+  const { test, tests, ...rest } = stored;
+  return { ...rest, tests: tests ?? (test !== undefined && test !== null ? [test] : []) };
 }
 
 export function newQuestion(
@@ -92,7 +113,18 @@ export function nextImagePath(images: readonly DraftImage[], mime: string): stri
 // ---- draft -> files -------------------------------------------------------------------------------------------
 
 function orderedBlock(b: Block): Block {
-  if (b.type === 'image') return { id: b.id, type: 'image', src: b.src ?? '', alt: b.alt ?? '' };
+  if (b.type === 'image') {
+    // Picture layout (DECISIONS Q26 d) is written only when it is set, like `font` below, so files without it stay as they were.
+    return {
+      id: b.id,
+      type: 'image',
+      src: b.src ?? '',
+      alt: b.alt ?? '',
+      ...(b.align !== undefined ? { align: b.align } : {}),
+      ...(b.width !== undefined ? { width: b.width } : {}),
+      ...(b.height !== undefined ? { height: b.height } : {}),
+    };
+  }
   // `font` (DECISIONS Q25) is written only when it is set, so files without a font stay exactly as they were.
   return { id: b.id, type: b.type, text: b.text ?? '', ...(b.font !== undefined ? { font: b.font } : {}) };
 }
@@ -134,7 +166,9 @@ export function draftToFiles(draft: CourseDraft): DraftFiles {
   files['course.json'] = toJson(orderedCard(draft.course));
   if (draft.overview.length > 0) files['overview.json'] = toJson({ blocks: draft.overview.map(orderedBlock) });
   if (draft.content.length > 0) files['content.json'] = toJson({ blocks: draft.content.map(orderedBlock) });
-  if (draft.test !== null && draft.test.questions.length > 0) files['test.json'] = toJson(orderedTest(draft.test));
+  for (const test of draft.tests) {
+    if (test.questions.length > 0) files[testFilePath(test.id)] = toJson(orderedTest(test));
+  }
   const sorted = [...draft.images].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
   for (const img of sorted) files[img.path] = img.bytes;
   return files;
@@ -195,12 +229,30 @@ export function draftFromFiles(files: DraftFiles): ValidationResult<CourseDraft>
   const overview = blocksOf('overview.json');
   const content = blocksOf('content.json');
 
-  let test: Test | null = null;
-  const t = readJson('test.json');
-  if (t.found && t.value !== undefined) {
-    const r = validateTest(t.value);
-    if (r.ok) test = r.value;
-    else addAll('test.json', r.errors);
+  const tests: Test[] = [];
+  const legacy = readJson(LEGACY_TEST_FILE);
+  if (legacy.found && legacy.value !== undefined) {
+    const r = validateTest(legacy.value);
+    if (r.ok) tests.push(r.value);
+    else addAll(LEGACY_TEST_FILE, r.errors);
+  }
+  const testPaths = [...map.keys()].filter((p) => testIdFromPath(p) !== null).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  for (const path of testPaths) {
+    const file = readJson(path);
+    if (!file.found || file.value === undefined) continue;
+    const r = validateTest(file.value);
+    if (!r.ok) {
+      addAll(path, r.errors);
+    } else if (r.value.id !== testIdFromPath(path)) {
+      errors.push(`${path}: id "${r.value.id}" does not match the file name`);
+    } else {
+      tests.push(r.value);
+    }
+  }
+  const seenTests = new Set<string>();
+  for (const test of tests) {
+    if (seenTests.has(test.id)) errors.push(`tests: duplicate id "${test.id}"`);
+    seenTests.add(test.id);
   }
 
   const images: DraftImage[] = [];
@@ -217,7 +269,7 @@ export function draftFromFiles(files: DraftFiles): ValidationResult<CourseDraft>
   images.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 
   if (errors.length > 0 || course === null) return { ok: false, errors: errors.length > 0 ? errors : ['course.json: missing'] };
-  return { ok: true, value: { course, overview, content, test, images } };
+  return { ok: true, value: { course, overview, content, tests, images } };
 }
 
 // ---- checks across the whole draft --------------------------------------------------------------------------
@@ -235,9 +287,14 @@ export function validateDraft(draft: CourseDraft): ValidationResult<CourseDraft>
   if (!ov.ok) addAll('overview', ov.errors);
   const ct = validateBlocks({ blocks: draft.content });
   if (!ct.ok) addAll('content', ct.errors);
-  if (draft.test !== null) {
-    const t = validateTest(draft.test);
-    if (!t.ok) addAll('test', t.errors);
+  draft.tests.forEach((test, i) => {
+    const t = validateTest(test);
+    if (!t.ok) addAll(`tests[${i}]`, t.errors);
+  });
+  const testIds = new Set<string>();
+  for (const test of draft.tests) {
+    if (testIds.has(test.id)) errors.push(`tests: id "${test.id}" is used by two tests`);
+    testIds.add(test.id);
   }
 
   const seen = new Set<string>();
@@ -262,7 +319,7 @@ export function validateDraft(draft: CourseDraft): ValidationResult<CourseDraft>
   draft.content.forEach((b, i) => {
     if (b.type === 'image') needs(`content.blocks[${i}]`, b.src);
   });
-  needs('test.image', draft.test?.image);
+  draft.tests.forEach((test, i) => needs(`tests[${i}].image`, test.image));
 
   return errors.length === 0 ? { ok: true, value: draft } : { ok: false, errors };
 }

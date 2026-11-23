@@ -1,4 +1,5 @@
 import { isId } from './ids';
+import { LEGACY_TEST_FILE, testFilesOf, testIdFromPath } from './testFiles';
 import type {
   Block,
   BlockFile,
@@ -82,6 +83,53 @@ export async function loadManifest(): Promise<ManifestResult> {
 }
 
 const EMPTY = { state: 'empty' } as const;
+
+export interface LoadedTests {
+  /** The valid tests that have questions: the old `test.json` first, then `tests/<id>.json` in path order. */
+  tests: Test[];
+  /** Readable problems: broken JSON, a failed rule, a file name that does not match the test id, a test id used twice. */
+  errors: string[];
+}
+
+/**
+ * Loads ALL tests of one course (P10 T11r, DECISIONS Q27 a): the old single `test.json` (when it exists) and every
+ * `tests/<tst-id>.json` named by `manifestKeys`, the keys of this course's `files` in manifest.json (a browser cannot list a
+ * folder). A missing file or a test without questions is skipped quietly; a broken file adds its errors and is left out.
+ * `loadCourse` is unchanged and still reads only `test.json`. The call itself never rejects.
+ */
+export async function loadCourseTests(courseId: string, manifestKeys: readonly string[] = []): Promise<LoadedTests> {
+  const requested: string = courseId; // isId() is a type guard; keep a plain string for the message below
+  if (!isId('crs', courseId)) {
+    return { tests: [], errors: [`courseId: "${requested}" is not a valid course id`] };
+  }
+  const dir = `courses/${courseId}`;
+  const names = [LEGACY_TEST_FILE, ...testFilesOf(courseId, manifestKeys)];
+  const loaded = await Promise.all(
+    names.map(async (name) => ({ name, path: `${dir}/${name}`, fetched: await fetchJson(`${dir}/${name}`) })),
+  );
+
+  const tests: Test[] = [];
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  for (const { name, path, fetched } of loaded) {
+    const section = toSection(fetched, path, validateTest, (t) => (t.questions.length > 0 ? t : null));
+    if (section.state === 'invalid') errors.push(...section.errors);
+    if (section.state !== 'ready') continue;
+    const test = section.value;
+    const expected = testIdFromPath(name);
+    if (expected !== null && expected !== test.id) {
+      errors.push(`${path}: id "${test.id}" does not match the file name`);
+      continue;
+    }
+    if (seen.has(test.id)) {
+      errors.push(`${path}: id "${test.id}" is already used by another test of this course`);
+      continue;
+    }
+    seen.add(test.id);
+    tests.push(test);
+  }
+  return { tests, errors };
+}
 
 /** Loads one course folder. Every section is `ready`, `empty` or `invalid`; the call itself never rejects. */
 export async function loadCourse(courseId: string): Promise<LoadedCourse> {

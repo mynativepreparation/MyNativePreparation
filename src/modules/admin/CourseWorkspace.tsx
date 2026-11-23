@@ -12,7 +12,7 @@ import { joinChapters, splitChapters, type Chapter } from '../../core/admin/chap
 import { applySlotText, chapterToItems, insertPicture, removePicture, updatePicture } from '../../core/admin/chapterSlots';
 import { applyStrings, chapterToStrings } from '../../core/admin/chapterText';
 import { prepareImage, type WebpEncoder } from '../../core/admin/image';
-import type { CourseDraft, DraftImage } from '../../core/admin/model';
+import { firstTest, replaceFirstTest, type CourseDraft, type DraftImage } from '../../core/admin/model';
 import { pruneImages } from '../../core/admin/pruneImages';
 import { summarizeProblems, type Problem } from '../../core/admin/problems';
 import { browserWebpEncoder } from '../../core/admin/webpEncoder';
@@ -119,7 +119,7 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
   const [listOpen, setListOpen] = useState(false);
   /** Goes up whenever a part or a chapter is opened, added, moved or deleted, so the chapter window starts fresh. */
   const [version, setVersion] = useState(0);
-  const [test, setTest] = useState<Test | null>(draft.test);
+  const [test, setTest] = useState<Test | null>(firstTest(draft));
   const [images, setImages] = useState<DraftImage[]>(draft.images);
   const [problems, setProblems] = useState<Problem[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -236,7 +236,7 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
       course: checked.ok ? courseWithFields(base, checked) : base,
       overview: joinChapters(withoutBlankChapters(chapters.overview)),
       content: joinChapters(withoutBlankChapters(chapters.content)),
-      test: emptyToNull(test),
+      tests: replaceFirstTest(draft.tests, emptyToNull(test)),
       images,
     };
     const final: CourseDraft = { ...next, images: pruneImages(next) };

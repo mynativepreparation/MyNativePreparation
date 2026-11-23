@@ -17,9 +17,11 @@ export interface Problem {
 const BLOCK_TEXT = /^(overview|content): blocks\[(\d+)\]\.text\b/;
 const BLOCK_IMAGE = /^(overview|content): blocks\[(\d+)\]\.src\b/;
 const BLOCK_IMAGE_MISSING = /^(overview|content)\.blocks\[(\d+)\]: image /;
-const QUESTION_TEXT = /^test: questions\[(\d+)\]\.text\b/;
-const QUESTION_OPTIONS = /^test: questions\[(\d+)\]\.options\b/;
-const QUESTION_CORRECT = /^test: questions\[(\d+)\]\.correctIndex\b/;
+const QUESTION_TEXT = /^tests\[\d+\]: questions\[(\d+)\]\.text\b/;
+const QUESTION_OPTIONS = /^tests\[\d+\]: questions\[(\d+)\]\.options\b/;
+const QUESTION_CORRECT = /^tests\[\d+\]: questions\[(\d+)\]\.correctIndex\b/;
+const TEST_PER_GAME = /^tests\[\d+\]: questionsPerGame/;
+const TEST_IMAGE = /^tests\[\d+\]\.image:/;
 
 function classify(raw: string): Problem {
   let m = BLOCK_TEXT.exec(raw);
@@ -34,10 +36,10 @@ function classify(raw: string): Problem {
   if (m) return { key: 'admin.problem.questionOptions', n: Number(m[1]) + 1 };
   m = QUESTION_CORRECT.exec(raw);
   if (m) return { key: 'admin.problem.questionCorrect', n: Number(m[1]) + 1 };
-  if (raw.startsWith('test: questionsPerGame')) return { key: 'admin.problem.perGame' };
+  if (TEST_PER_GAME.test(raw)) return { key: 'admin.problem.perGame' };
   if (raw.startsWith('course: title')) return { key: 'admin.problem.courseTitle' };
   if (raw.startsWith('course: order')) return { key: 'admin.problem.courseOrder' };
-  if (raw.startsWith('course.cover:') || raw.startsWith('test.image:') || /^images: /.test(raw)) {
+  if (raw.startsWith('course.cover:') || TEST_IMAGE.test(raw) || /^images: /.test(raw)) {
     return { key: 'admin.problem.image' };
   }
   return { key: 'admin.problem.other' };

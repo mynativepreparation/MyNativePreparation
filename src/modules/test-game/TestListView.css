@@ -1,0 +1,26 @@
+.np-testlist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
+.np-testlist__title {
+  margin: 0;
+  font-size: var(--np-font-size-lg);
+  overflow-wrap: anywhere;
+}
+
+/* 1 column on a 360 px phone, 2 on wider screens; never sideways scroll */
+.np-testlist__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--np-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.np-testlist__grid .np-tile {
+  width: 100%;
+  overflow-wrap: anywhere;
+}

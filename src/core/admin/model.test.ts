@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
+import { testFilePath } from '../content/testFiles';
 import {
   createCourseDraft,
   createTest,
@@ -24,7 +25,7 @@ function sampleDraft(): CourseDraft {
   const test = createTest(3);
   test.title = 'ક્વિઝ';
   test.questions = [newQuestion('પ્રશ્ન?', ['એક', 'બે', 'ત્રણ', 'ચાર'], 1, 'સમજૂતી')];
-  d.test = test;
+  d.tests = [test];
   d.images = [{ path: 'images/1.svg', mime: 'image/svg+xml', bytes: new TextEncoder().encode('<svg/>') }];
   return d;
 }
@@ -34,7 +35,7 @@ describe('createCourseDraft', () => {
     const d = createCourseDraft();
     expect(d.course.id).toMatch(/^crs-[a-z0-9]{8}$/);
     expect(d.overview).toEqual([]);
-    expect(d.test).toBeNull();
+    expect(d.tests).toEqual([]);
     const r = validateDraft(d);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors.join('\n')).toContain('title');
@@ -50,7 +51,7 @@ describe('draftToFiles', () => {
     const d = sampleDraft();
     expect(validateDraft(d).ok).toBe(true);
     const files = draftToFiles(d);
-    expect(Object.keys(files)).toEqual(['course.json', 'overview.json', 'content.json', 'test.json', 'images/1.svg']);
+    expect(Object.keys(files)).toEqual(['course.json', 'overview.json', 'content.json', ...d.tests.map((t) => testFilePath(t.id)), 'images/1.svg']);
     expect(files['images/1.svg']).toBeInstanceOf(Uint8Array);
     expect(txt(files['course.json'])).toContain('વિજ્ઞાન: પાણીનું ચક્ર');
   });
@@ -58,7 +59,7 @@ describe('draftToFiles', () => {
   it('leaves out empty optional parts', () => {
     const d = createCourseDraft({ title: 'Only a card' });
     expect(Object.keys(draftToFiles(d))).toEqual(['course.json']);
-    d.test = createTest();
+    d.tests = [createTest()];
     expect(Object.keys(draftToFiles(d))).toEqual(['course.json']);
   });
 
@@ -71,7 +72,8 @@ describe('draftToFiles', () => {
     const files = draftToFiles(sampleDraft());
     const card = Object.keys(JSON.parse(txt(files['course.json'])) as object);
     expect(card).toEqual(['id', 'title', 'description', 'order']);
-    const test = Object.keys(JSON.parse(txt(files['test.json'])) as object);
+    const testPath = Object.keys(files).find((k) => k.startsWith('tests/')) ?? '';
+    const test = Object.keys(JSON.parse(txt(files[testPath])) as object);
     expect(test).toEqual(['id', 'title', 'questionsPerGame', 'questions']);
   });
 });
@@ -85,7 +87,7 @@ describe('draftFromFiles', () => {
       expect(back.value.course).toEqual(d.course);
       expect(back.value.overview).toEqual(d.overview);
       expect(back.value.content).toEqual(d.content);
-      expect(back.value.test).toEqual(d.test);
+      expect(back.value.tests).toEqual(d.tests);
       expect(back.value.images.map((i) => i.path)).toEqual(['images/1.svg']);
       expect(validateDraft(back.value).ok).toBe(true);
     }
@@ -95,7 +97,7 @@ describe('draftFromFiles', () => {
     const files: DraftFiles = { 'course.json': JSON.stringify({ id: 'crs-abcd1234', title: 'T', order: 1 }) };
     const r = draftFromFiles(files);
     expect(r.ok).toBe(true);
-    if (r.ok) expect(r.value.test).toBeNull();
+    if (r.ok) expect(r.value.tests).toEqual([]);
   });
 
   it('reports a missing course.json', () => {
@@ -159,14 +161,17 @@ describe('validateDraft', () => {
 
   it('finds a test image that is missing and a test with a bad question', () => {
     const d = sampleDraft();
-    if (d.test === null) throw new Error('sample has no test');
-    d.test.image = 'images/t.png';
-    d.test.questions = [{ ...newQuestion('?', ['a', 'b', 'c', 'd'], 0), text: '' }];
+    if (d.tests.length === 0) throw new Error('sample has no test');
+    d.tests = d.tests.map((t) => ({
+      ...t,
+      image: 'images/t.png',
+      questions: [{ ...newQuestion('?', ['a', 'b', 'c', 'd'], 0), text: '' }],
+    }));
     const r = validateDraft(d);
     expect(r.ok).toBe(false);
     if (!r.ok) {
-      expect(r.errors).toContain('test.image: image "images/t.png" is not in the draft');
-      expect(r.errors.some((e) => e.startsWith('test: questions[0].text'))).toBe(true);
+      expect(r.errors).toContain('tests[0].image: image "images/t.png" is not in the draft');
+      expect(r.errors.some((e) => e.startsWith('tests[0]: questions[0].text'))).toBe(true);
     }
   });
 

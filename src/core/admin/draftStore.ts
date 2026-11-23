@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { CourseDraft } from './model';
+import { migrateDraft, type CourseDraft } from './model';
 
 // Local drafts of the Admin editor (P10 T6, DECISIONS Q24): one row per course, kept in the browser's IndexedDB so a reload
 // loses nothing. This is its OWN small database (`np-admin-drafts`), separate from the user's encrypted `np-local` database
@@ -60,6 +60,11 @@ async function guard<T>(run: () => Promise<T>): Promise<StoreResult<T>> {
   }
 }
 
+/** Rows saved by an older editor hold one `test` and no `tests`: bring them to the current shape (nothing is lost; the next Save writes the new shape). */
+function migrateRow(row: DraftRecord): DraftRecord {
+  return { ...row, draft: migrateDraft(row.draft) };
+}
+
 function byOrder(a: DraftRecord, b: DraftRecord): number {
   return (
     a.draft.course.order - b.draft.course.order ||
@@ -76,10 +81,14 @@ export function openDraftStore(options: { name?: string; now?: () => number } = 
     list: () =>
       guard(async () => {
         const rows = await db.drafts.toArray();
-        return rows.sort(byOrder);
+        return rows.map(migrateRow).sort(byOrder);
       }),
 
-    get: (id) => guard(() => db.drafts.get(id)),
+    get: (id) =>
+      guard(async () => {
+        const row = await db.drafts.get(id);
+        return row === undefined ? undefined : migrateRow(row);
+      }),
 
     put: (draft) =>
       guard(async () => {

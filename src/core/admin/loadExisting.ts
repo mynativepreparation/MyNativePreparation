@@ -1,4 +1,14 @@
-import { contentUrl, loadCourse, loadManifest, type LoadedCourse, type ManifestResult } from '../content/loader';
+import {
+  contentUrl,
+  loadCourse,
+  loadCourseTests,
+  loadManifest,
+  type LoadedCourse,
+  type LoadedTests,
+  type ManifestResult,
+} from '../content/loader';
+import { testFilePath } from '../content/testFiles';
+import type { Test } from '../content/types';
 import { draftFromFiles, type CourseDraft, type DraftFiles } from './model';
 
 // Loads a PUBLISHED course (public/content) into an editor draft (P10 T9(b), SPEC D6 "Edit"). It reads only: nothing is written
@@ -21,6 +31,11 @@ export interface PublishedDeps {
   loadCourse: (id: string) => Promise<LoadedCourse>;
   fetchBytes: (url: string) => Promise<Uint8Array | null>;
   contentUrl: (path: string) => string;
+  /**
+   * Loads ALL tests of a course: the old `test.json` and the `tests/<id>.json` files named by the manifest keys (DECISIONS Q27).
+   * Optional: without it only the old `test.json` that `loadCourse` reads is used.
+   */
+  loadTests?: (courseId: string, manifestKeys: readonly string[]) => Promise<LoadedTests>;
 }
 
 async function fetchBytes(url: string): Promise<Uint8Array | null> {
@@ -35,7 +50,19 @@ async function fetchBytes(url: string): Promise<Uint8Array | null> {
   }
 }
 
-export const defaultPublishedDeps: PublishedDeps = { loadManifest, loadCourse, fetchBytes, contentUrl };
+export const defaultPublishedDeps: PublishedDeps = { loadManifest, loadCourse, fetchBytes, contentUrl, loadTests: loadCourseTests };
+
+/** The `files` keys of one course in the published manifest, or null when the manifest or the course cannot be read. */
+async function manifestKeysOf(courseId: string, deps: PublishedDeps): Promise<string[] | null> {
+  try {
+    const result = await deps.loadManifest();
+    if (!result.ok) return null;
+    const course = result.manifest.courses.find((c) => c.id === courseId);
+    return course === undefined ? null : Object.keys(course.files);
+  } catch {
+    return null;
+  }
+}
 
 /** The courses named in the published manifest, in manifest order. */
 export async function listPublished(deps: PublishedDeps = defaultPublishedDeps): Promise<ListResult> {
@@ -64,13 +91,27 @@ export async function loadPublishedDraft(courseId: string, deps: PublishedDeps =
   const card = loaded.card.value;
   const overview = loaded.overview.state === 'ready' ? loaded.overview.value : [];
   const content = loaded.content.state === 'ready' ? loaded.content.value : [];
-  const test = loaded.test.state === 'ready' ? loaded.test.value : null;
+  let tests: Test[] = loaded.test.state === 'ready' ? [loaded.test.value] : [];
+  if (deps.loadTests !== undefined) {
+    // The course may also have `tests/<id>.json` files (DECISIONS Q27); the manifest names them. When the manifest cannot be read,
+    // the old `test.json` that `loadCourse` already gave is all there is.
+    const keys = await manifestKeysOf(courseId, deps);
+    if (keys !== null) {
+      try {
+        const all = await deps.loadTests(courseId, keys);
+        if (all.errors.length > 0) return { ok: false, code: 'invalid' };
+        tests = all.tests;
+      } catch {
+        return { ok: false, code: 'unavailable' };
+      }
+    }
+  }
 
   const json = (value: unknown): string => JSON.stringify(value);
   const files: DraftFiles = { 'course.json': json(card) };
   if (overview.length > 0) files['overview.json'] = json({ blocks: overview });
   if (content.length > 0) files['content.json'] = json({ blocks: content });
-  if (test !== null) files['test.json'] = json(test);
+  for (const test of tests) files[testFilePath(test.id)] = json(test);
 
   // Every picture the course uses, once each.
   const paths = new Set<string>();
@@ -78,7 +119,9 @@ export async function loadPublishedDraft(courseId: string, deps: PublishedDeps =
   for (const block of [...overview, ...content]) {
     if (block.type === 'image' && block.src) paths.add(block.src);
   }
-  if (test?.image) paths.add(test.image);
+  for (const test of tests) {
+    if (test.image) paths.add(test.image);
+  }
 
   for (const path of paths) {
     const bytes = await deps.fetchBytes(deps.contentUrl(`courses/${card.id}/${path}`));

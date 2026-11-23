@@ -131,10 +131,10 @@ describe('CourseWorkspace: Save', () => {
 
   it('an empty test is saved as nothing', () => {
     const draft = twoChapters();
-    draft.test = createTest();
+    draft.tests = [createTest()];
     const { saved } = setup(draft);
     save();
-    expect(saved.map((d) => d.test)).toEqual([null]);
+    expect(saved.map((d) => d.tests)).toEqual([[]]);
   });
 });
 

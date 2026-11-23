@@ -1,10 +1,10 @@
 import type { CourseDraft, DraftImage } from './model';
 
 // Before a draft is stored, pictures that nothing uses any more (a replaced or removed picture) are dropped (P10 T7(d)).
-// A picture is used when the cover, a picture block of the overview or the content, or the test image points at its path.
+// A picture is used when the cover, a picture block of the overview or the content, or the image of any test points at its path.
 // Pure: returns a new list in the old order and never changes the draft.
 
-export function usedImagePaths(draft: Pick<CourseDraft, 'course' | 'overview' | 'content' | 'test'>): Set<string> {
+export function usedImagePaths(draft: Pick<CourseDraft, 'course' | 'overview' | 'content' | 'tests'>): Set<string> {
   const used = new Set<string>();
   const add = (path: string | undefined): void => {
     if (path !== undefined && path !== '') used.add(path);
@@ -13,7 +13,7 @@ export function usedImagePaths(draft: Pick<CourseDraft, 'course' | 'overview' | 
   for (const b of [...draft.overview, ...draft.content]) {
     if (b.type === 'image') add(b.src);
   }
-  add(draft.test?.image);
+  for (const test of draft.tests) add(test.image);
   return used;
 }
 
