@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { t, tf } from '../../core/i18n';
 import { checkMnemonic, type MnemonicProblem } from '../../core/identity/mnemonic';
+import { afterUnlockPath } from '../../core/identity/returnTo';
 import { unlock } from '../../core/identity/session';
 import { AUTH_ROUTES, markOnboarded } from '../../core/identity/status';
 import { Button } from '../../core/ui';
@@ -32,6 +33,7 @@ type Failure = 'empty' | 'wrong_key' | 'failed';
 // (a returning user skips Basic info and Privacy) and goes Home.
 export function LoginScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState<Failure | null>(null);
@@ -63,7 +65,8 @@ export function LoginScreen() {
       const result = await unlock(text);
       if (result.status === 'ok') {
         await markOnboarded();
-        navigate(AUTH_ROUTES.home);
+        // Home, or the address that was asked for before the lock (a deep link such as #/admin).
+        navigate(afterUnlockPath(location.state));
         return;
       }
       // Invalid words are explained by the live hint; a wrong key gets its own message. The typed words stay so they can be fixed.

@@ -13,7 +13,18 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt', // the app asks the user before switching to a new version
       // the default precache is js, css and html; the report fonts (public/fonts/*.woff, P08) must be cached too, so the PDF works offline
-      workbox: { globPatterns: ['**/*.{js,css,html,woff}'] },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,woff}'],
+        // the reader fonts (public/fonts/*.woff2, P10 T11c + T11p) are NOT precached (about 16 families, most texts use one or two): the browser downloads a
+        // font the first time a text uses it and this rule keeps it, so a font that was shown once also works offline (owner choice A, 22 Nov)
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith('.woff2'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'np-fonts', expiration: { maxEntries: 120 }, cacheableResponse: { statuses: [0, 200] } },
+          },
+        ],
+      },
       manifest: {
         name: 'My Native Preparation',
         short_name: 'NativePrep',

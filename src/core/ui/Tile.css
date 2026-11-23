@@ -8,8 +8,8 @@
   padding: var(--np-space-4);
   border: 0;
   border-radius: var(--np-radius-lg);
-  background: var(--np-color-surface);
-  color: var(--np-color-text);
+  background: var(--np-tile-bg, var(--np-color-surface));
+  color: var(--np-tile-fg, var(--np-color-text));
   box-shadow: var(--np-shadow-raised);
   font: inherit;
   text-align: left;

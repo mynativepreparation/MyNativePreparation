@@ -1,6 +1,6 @@
 .np-card {
-  background: var(--np-color-surface);
-  color: var(--np-color-text);
+  background: var(--np-card-bg, var(--np-color-surface));
+  color: var(--np-card-fg, var(--np-color-text));
   border-radius: var(--np-radius-md);
   box-shadow: var(--np-shadow-raised);
   padding: var(--np-space-4);

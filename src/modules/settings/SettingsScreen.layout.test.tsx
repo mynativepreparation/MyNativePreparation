@@ -227,9 +227,9 @@ describe('settings screen keyboard', () => {
       screen.getByLabelText(t('info.email')),
       screen.getByLabelText(t('info.phone')),
       button(t('profile.save')),
-      button(t('theme.system')),
       button(t('theme.light')),
       button(t('theme.dark')),
+      button(t('theme.colour')),
       button(t('passphrase.logout')),
       button(t('update.check')),
     ];
@@ -256,7 +256,7 @@ describe('settings screen keyboard', () => {
     const retry = await screen.findByRole('button', { name: t('profile.retry') });
     const order = focusable();
     expect(order.indexOf(retry)).toBeGreaterThanOrEqual(0);
-    expect(order.indexOf(retry)).toBeLessThan(order.indexOf(button(t('theme.system'))));
+    expect(order.indexOf(retry)).toBeLessThan(order.indexOf(button(t('theme.light'))));
   });
 });
 

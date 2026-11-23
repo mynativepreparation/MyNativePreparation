@@ -1,0 +1,193 @@
+/* Toolbar of the Admin window (P10 T11n step B). Tokens only: no colour codes, no raw durations.
+   Six colourful buttons: 3 + 3 on a phone, one row when wide. Each button takes the colour of one of the ink tokens (light AND dark value),
+   its fill is a tint of that colour, so the text stays readable in both themes. */
+.np-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-toolbar__bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: var(--np-space-2);
+}
+
+.np-toolbar__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--np-space-1);
+  min-height: calc(var(--np-touch) * 1.4);
+  padding: var(--np-space-2);
+  border: 2px solid currentColor;
+  border-radius: var(--np-radius-md);
+  background: color-mix(in srgb, currentColor 14%, var(--np-color-surface));
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.np-toolbar__btn[aria-expanded='true'] {
+  background: color-mix(in srgb, currentColor 30%, var(--np-color-surface));
+}
+
+.np-toolbar__btn:disabled,
+.np-toolbar__opt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.np-toolbar__btn:focus-visible,
+.np-toolbar__opt:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+.np-toolbar__btn--fonts {
+  color: var(--np-color-ink-blue);
+}
+
+.np-toolbar__btn--style {
+  color: var(--np-color-ink-purple);
+}
+
+.np-toolbar__btn--boxes {
+  color: var(--np-color-ink-green);
+}
+
+.np-toolbar__btn--colour {
+  color: var(--np-color-ink-pink);
+}
+
+.np-toolbar__btn--add {
+  color: var(--np-color-ink-orange);
+}
+
+.np-toolbar__btn--settings {
+  color: var(--np-color-ink-teal);
+}
+
+.np-toolbar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5rem;
+}
+
+.np-toolbar__aa {
+  font-size: 1.3em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---------- the open panel ---------- */
+.np-toolbar__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+  padding: var(--np-space-3);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+}
+
+.np-toolbar__note {
+  margin: 0;
+  font-size: var(--np-font-size-sm);
+  color: var(--np-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.np-toolbar__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-2);
+  min-width: 0;
+}
+
+.np-toolbar__group-title {
+  margin: 0;
+  font-size: var(--np-font-size-sm);
+  font-weight: 600;
+  color: var(--np-color-text-muted);
+}
+
+.np-toolbar__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-2);
+}
+
+.np-toolbar__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--np-space-2);
+  min-height: var(--np-touch);
+  padding: var(--np-space-2) var(--np-space-3);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-sm);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  font: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.np-toolbar__opt[aria-pressed='true'] {
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 14%, var(--np-color-surface));
+  font-weight: 700;
+}
+
+.np-toolbar__opt[aria-pressed='mixed'] {
+  border: 2px dashed currentColor;
+}
+
+.np-toolbar__swatch {
+  flex: none;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  border: 1px solid var(--np-color-border);
+  border-radius: 50%;
+}
+
+.np-toolbar__swatch--red {
+  background: var(--np-color-ink-red);
+}
+
+.np-toolbar__swatch--orange {
+  background: var(--np-color-ink-orange);
+}
+
+.np-toolbar__swatch--brown {
+  background: var(--np-color-ink-brown);
+}
+
+.np-toolbar__swatch--green {
+  background: var(--np-color-ink-green);
+}
+
+.np-toolbar__swatch--teal {
+  background: var(--np-color-ink-teal);
+}
+
+.np-toolbar__swatch--blue {
+  background: var(--np-color-ink-blue);
+}
+
+.np-toolbar__swatch--purple {
+  background: var(--np-color-ink-purple);
+}
+
+.np-toolbar__swatch--pink {
+  background: var(--np-color-ink-pink);
+}

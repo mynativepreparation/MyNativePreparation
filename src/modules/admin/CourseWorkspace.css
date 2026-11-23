@@ -1,0 +1,21 @@
+/* Course workspace (P10 T11n step C3a): the part switch, the chapter window area and the bottom bar stacked in one column.
+   The chapter list reuses the rules of CourseWindow.css and BlockEditor.css (loaded by CourseWorkspace.tsx). Tokens only. */
+.np-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-workspace__parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-2);
+}
+
+.np-workspace__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}

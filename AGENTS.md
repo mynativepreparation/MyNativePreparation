@@ -14,12 +14,10 @@ Only Claude + Windows PowerShell/cmd. NO IDE, NO other agent (Kilo, VSCodium, et
 ## How to resume (works for any agent / IDE / login / machine)
 0. Read `NEXT.md` (about 20 lines: exact state and next step). TOKEN SAVING: never read a big file (>10 KB) whole; use head/tail; never re-read files the Log says were reviewed.
    RECOVERY: the owner uses several Claude accounts one after another (a new one starts when tokens run out); sessions NEVER run in parallel. A file newer than NEXT.md (see `get_file_info`) is unfinished work of the cut-off session: read its head, compare with the phase tasks, finish/verify it (a newer `logs\last-run.txt` with CHECK OK = verified), log it as "recovered". Never stop to ask about it. Before a task that touches 2+ files write `IN PROGRESS: <task> - files: ...` in NEXT.md; remove it when done. The ready-to-paste start prompt is `START-PROMPT.txt`.
-1. Read `PROGRESS.md` (short index). Find the phase marked `ACTIVE`.
-2. Read ONLY that phase file in `docs/phases/`. Do NOT read other phase files or the whole spec.
-   Read a section of `docs/SPEC.md` only if the phase file points you to it (by REQ id).
-3. Continue from the first unchecked `[ ]` task. Do one task at a time.
-4. After EVERY task: tick the box, and append one line to the phase file's `## Log`
-   (date, agent/model name, what changed, what is next). This is how the next agent resumes.
+1. NEXT.md names the ACTIVE phase file, the tick recipe and the Log marker. Read `PROGRESS.md` and the phase file ONLY at a phase start/end or if NEXT.md contradicts the disk. Never read other phase files or the whole spec; read a `docs/SPEC.md` section only if NEXT.md or the phase file points to it (by REQ id).
+2. FAST START (saves minutes): ONE `tool_search` (query "filesystem read write edit file directory", limit 20), then ONE message with `list_allowed_directories` + `read_text_file NEXT.md` in parallel. Put independent reads/edits in the same message. The ready-to-paste prompt is `START-PROMPT.txt`.
+3. Do ONLY NEXT.md's "Do now" (one task at a time). Check with `.\run.cmd fast.ps1` (changed files only; it switches to the full check by itself); use `check.ps1` at a phase end.
+4. After EVERY task, in ONE message (parallel edits): tick the box (edit `- [ ] Tn ` to `- [x] Tn `), append one line to the phase file's `## Log` (edit the `<!-- LOG-END -->` marker: your new line + the marker again; date, agent/model name, what changed, what is next), rewrite NEXT.md. This is how the next agent resumes.
 5. If you stop, crash, or are unsure: the log + checkboxes must already be up to date.
 
 ## Rules
@@ -37,4 +35,4 @@ Only Claude + Windows PowerShell/cmd. NO IDE, NO other agent (Kilo, VSCodium, et
 3. Run the build script (`scripts/build.*` once it exists); fix build errors; save the new build
    in `builds/` and delete the previous build file.
 4. Move a 5-line summary of the phase to `docs/done/` and set the phase to `DONE` in `PROGRESS.md`.
-5. Mark the next phase `ACTIVE`, create its detailed file (just-in-time planning), tell the owner in Gujarati.
+5. Mark the next phase `ACTIVE`, create its detailed file (just-in-time planning; end it with the line `<!-- LOG-END -->` after its `## Log`), tell the owner in Gujarati.

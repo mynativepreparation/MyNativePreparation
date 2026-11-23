@@ -1,0 +1,73 @@
+/* The pastel "Colour" theme looks (P10 Q28, T11w).
+   Every rule starts with [data-theme='colour'], so Light and Dark never match it and look exactly as before.
+   The components read the variables set here WITH a fallback to their normal colours (Tile.css, Card.css, app/Shell.css).
+   Rule (checked by colourTheme.css.test.ts): a pastel background is always set together with the dark text colour of the SAME hue. */
+
+/* course screen: the four tiles Overview, Content, Test and Report */
+[data-theme='colour'] .np-course__grid > li:nth-child(1) .np-tile {
+  --np-tile-bg: var(--np-color-tint1);
+  --np-tile-fg: var(--np-color-on-tint1);
+}
+
+[data-theme='colour'] .np-course__grid > li:nth-child(2) .np-tile {
+  --np-tile-bg: var(--np-color-tint2);
+  --np-tile-fg: var(--np-color-on-tint2);
+}
+
+[data-theme='colour'] .np-course__grid > li:nth-child(3) .np-tile {
+  --np-tile-bg: var(--np-color-tint3);
+  --np-tile-fg: var(--np-color-on-tint3);
+}
+
+[data-theme='colour'] .np-course__grid > li:nth-child(4) .np-tile {
+  --np-tile-bg: var(--np-color-tint4);
+  --np-tile-fg: var(--np-color-on-tint4);
+}
+
+/* home: every course card gets its own pastel, the six take turns */
+[data-theme='colour'] .np-home__grid > li:nth-child(6n + 1) .np-home__card {
+  --np-card-bg: var(--np-color-tint1);
+  --np-card-fg: var(--np-color-on-tint1);
+}
+
+[data-theme='colour'] .np-home__grid > li:nth-child(6n + 2) .np-home__card {
+  --np-card-bg: var(--np-color-tint2);
+  --np-card-fg: var(--np-color-on-tint2);
+}
+
+[data-theme='colour'] .np-home__grid > li:nth-child(6n + 3) .np-home__card {
+  --np-card-bg: var(--np-color-tint3);
+  --np-card-fg: var(--np-color-on-tint3);
+}
+
+[data-theme='colour'] .np-home__grid > li:nth-child(6n + 4) .np-home__card {
+  --np-card-bg: var(--np-color-tint4);
+  --np-card-fg: var(--np-color-on-tint4);
+}
+
+[data-theme='colour'] .np-home__grid > li:nth-child(6n + 5) .np-home__card {
+  --np-card-bg: var(--np-color-tint5);
+  --np-card-fg: var(--np-color-on-tint5);
+}
+
+[data-theme='colour'] .np-home__grid > li:nth-child(6n) .np-home__card {
+  --np-card-bg: var(--np-color-tint6);
+  --np-card-fg: var(--np-color-on-tint6);
+}
+
+/* settings: the cards take turns between sky and lavender */
+[data-theme='colour'] .np-settings__stack > .np-card:nth-child(2n + 1) {
+  --np-card-bg: var(--np-color-tint5);
+  --np-card-fg: var(--np-color-on-tint5);
+}
+
+[data-theme='colour'] .np-settings__stack > .np-card:nth-child(2n) {
+  --np-card-bg: var(--np-color-tint6);
+  --np-card-fg: var(--np-color-on-tint6);
+}
+
+/* bottom bar */
+[data-theme='colour'] .np-nav {
+  --np-nav-bg: var(--np-color-tint6);
+  --np-nav-fg: var(--np-color-on-tint6);
+}

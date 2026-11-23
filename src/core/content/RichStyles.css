@@ -1,0 +1,201 @@
+/* Rich text styles of the reader (P10 T11k, DECISIONS Q26): colours, sizes, boxes. Tokens only: every colour comes from a theme
+   variable (the ink colours have a light AND a dark value in core/ui/tokens.ts) or from currentColor, so dark mode stays readable.
+   Boxes use at most a 14% tint of their own colour; core/ui/ink.contrast.test.ts proves the text is still 4.5:1 inside such a tint. */
+
+/* ---------- text colours ---------- */
+.np-ink-red {
+  color: var(--np-color-ink-red);
+}
+
+.np-ink-orange {
+  color: var(--np-color-ink-orange);
+}
+
+.np-ink-brown {
+  color: var(--np-color-ink-brown);
+}
+
+.np-ink-green {
+  color: var(--np-color-ink-green);
+}
+
+.np-ink-teal {
+  color: var(--np-color-ink-teal);
+}
+
+.np-ink-blue {
+  color: var(--np-color-ink-blue);
+}
+
+.np-ink-purple {
+  color: var(--np-color-ink-purple);
+}
+
+.np-ink-pink {
+  color: var(--np-color-ink-pink);
+}
+
+/* ---------- text sizes (em: they follow the reader's own font scale) ---------- */
+.np-size-s {
+  font-size: 0.85em;
+}
+
+.np-size-l {
+  font-size: 1.25em;
+}
+
+.np-size-xl {
+  font-size: 1.6em;
+}
+
+.np-size-xxl {
+  font-size: 2.1em;
+}
+
+/* ---------- box around EACH letter ---------- */
+.np-lbox {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 1.5em;
+  height: 1.5em;
+  margin: 0.1em 0.12em;
+  padding: 0 0.1em;
+  isolation: isolate; /* the diamond shape sits on a layer behind the letter */
+  line-height: 1.4em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.np-lbox-circle {
+  border-radius: 50%;
+}
+
+.np-lbox-square {
+  border-radius: 0.1em;
+}
+
+.np-lbox-round {
+  border-radius: 0.4em;
+}
+
+.np-lbox-light {
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-lbox-dark {
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* the diamond is a turned square behind the letter; the letter itself stays straight */
+.np-lbox.np-lbox-diamond {
+  margin-inline: 0.22em;
+  border: 0;
+  background: none;
+}
+
+.np-lbox-diamond::before {
+  content: '';
+  position: absolute;
+  inset: 0.2em;
+  z-index: -1;
+  box-sizing: border-box;
+  transform: rotate(45deg);
+}
+
+.np-lbox-diamond.np-lbox-light::before {
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-lbox-diamond.np-lbox-dark::before {
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* ---------- box around selected words (one box around the whole selection; clones its edges on every line) ---------- */
+.np-wbox {
+  padding: 0.05em 0.3em;
+  border-radius: 0.2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.np-wbox-box-light,
+.np-wbox-pill-light {
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-wbox-box-dark,
+.np-wbox-pill-dark {
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.np-wbox-pill-light,
+.np-wbox-pill-dark {
+  border-radius: var(--np-radius-pill);
+}
+
+.np-wbox-dashed {
+  border: 2px dashed currentColor;
+}
+
+.np-wbox-double {
+  border: 4px double currentColor;
+}
+
+.np-wbox-underline {
+  padding-inline: 0.1em;
+  border-radius: 0;
+  border-bottom: 3px solid currentColor;
+}
+
+/* ---------- box around a whole paragraph or list ---------- */
+.np-pbox {
+  padding: var(--np-space-2) var(--np-space-3);
+  border-radius: var(--np-radius-sm);
+}
+
+.np-block-text > .np-block-list.np-pbox {
+  padding-inline-start: calc(var(--np-space-3) + var(--np-space-5)); /* room for the bullets inside the box */
+}
+
+.np-pbox-box-light {
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-pbox-box-dark {
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.np-pbox-round {
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: var(--np-radius-md);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-pbox-dashed {
+  border: 2px dashed currentColor;
+}
+
+.np-pbox-double {
+  border: 4px double currentColor;
+}
+
+.np-pbox-leftbar {
+  border-inline-start: 4px solid currentColor;
+  border-radius: 0;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.np-pbox-shadow {
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  box-shadow: var(--np-shadow-raised-sm);
+}

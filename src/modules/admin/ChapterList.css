@@ -1,0 +1,63 @@
+/* Chapter list of the course window (the "Edit" button): every chapter with Open, Up, Down and Delete (ChapterList.tsx).
+   Moved here from CourseWindow.css in P10 T12. Tokens only: no colour codes, no raw durations. */
+.np-chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-chapter-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-chapter-list__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--np-space-3);
+}
+
+.np-chapter-list__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-1);
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.np-chapter-list__name,
+.np-chapter-list__title,
+.np-chapter-list__meta,
+.np-chapter-list__text {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-chapter-list__name {
+  font-weight: 600;
+}
+
+.np-chapter-list__meta {
+  font-size: var(--np-font-size-sm);
+}
+
+.np-chapter-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-2);
+}
+
+.np-chapter-list__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-2);
+  flex-basis: 100%;
+  min-width: 0;
+}

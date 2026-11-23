@@ -1,0 +1,52 @@
+.np-chapter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  min-width: 0;
+}
+
+/* The toolbar is drawn into this host by the text box that has the focus. The host adds no box of its own to the layout. */
+.np-chapter__toolbar {
+  display: contents;
+}
+
+/* the white window of the mock-up: dashed boxes, each in its own colour (title yellow-orange, subtitle blue, content purple) */
+.np-chapter__window {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  padding: var(--np-space-4);
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  box-shadow: var(--np-shadow-raised-sm);
+}
+
+.np-chapter__field {
+  min-width: 0;
+}
+
+.np-chapter__field .np-richbox {
+  border-width: 2px;
+  border-style: dashed;
+}
+
+.np-chapter__field--title .np-richbox {
+  border-color: color-mix(in srgb, var(--np-color-ink-orange) 70%, transparent);
+  background: color-mix(in srgb, var(--np-color-ink-orange) 8%, var(--np-color-surface));
+}
+
+.np-chapter__field--subtitle .np-richbox {
+  border-color: color-mix(in srgb, var(--np-color-ink-blue) 70%, transparent);
+  background: color-mix(in srgb, var(--np-color-ink-blue) 8%, var(--np-color-surface));
+}
+
+/* every text box of the content; the only one (a chapter with no picture) is the big one of the mock-up */
+.np-chapter__field--content .np-richbox {
+  min-height: 7rem;
+  border-color: color-mix(in srgb, var(--np-color-ink-purple) 70%, transparent);
+  background: color-mix(in srgb, var(--np-color-ink-purple) 8%, var(--np-color-surface));
+}
+
+.np-chapter__field--alone .np-richbox {
+  min-height: 40vh;
+}

@@ -12,9 +12,9 @@ import { UpdateCard } from './UpdateCard';
 import './SettingsScreen.css';
 
 const MODES: { mode: ThemeMode; label: TextKey }[] = [
-  { mode: 'system', label: 'theme.system' },
   { mode: 'light', label: 'theme.light' },
   { mode: 'dark', label: 'theme.dark' },
+  { mode: 'colour', label: 'theme.colour' },
 ];
 
 export function SettingsScreen() {

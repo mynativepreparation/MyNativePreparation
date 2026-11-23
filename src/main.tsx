@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import './core/ui/tokens.css';
 import './core/ui/base.css';
+import './core/ui/colourTheme.css';
+import './core/ui/fonts.css';
 import { initTheme } from './core/theme/theme';
 import { router } from './app/router';
 import { UpdatePrompt } from './app/UpdatePrompt';

@@ -1,0 +1,7 @@
+# P09 summary — DONE 2026-11-21
+
+- Settings (`src/modules/settings/`) now shows, in this order: Profile, Theme, Fingerprint, PIN, Passphrase information (+ Log out), Update app, About. Each card loads on its own and keeps its own css and tests; `SettingsScreen` carries `data-np-check` for the layout test.
+- Profile card: name, email, phone, all optional; prefilled from the encrypted repo, saved through `saveProfile` (an empty form saves an empty profile); email checked by shape only. The rule moved to `core/identity/profileInput.ts` (`EMAIL_SHAPE`, `buildProfile`), shared with onboarding. Friendly text for `LockedError` / `DecryptError`; long Gujarati names wrap.
+- Update app (`core/update/`, DECISIONS Q23): one service-worker registration and store; offline / busy / latest / new-version-ready / error (10 s timeout) states, announced via `aria-live`; "Update now" keeps local data; `UpdatePrompt` still works. About card: name, real version (`__APP_VERSION__` via `define`), MIT licence, the privacy-screen data-policy wording, libraries line.
+- 1295 tests green (95 files, incl. `SettingsScreen.order` / `.layout` at 360 / 768 / 1366 px and `core/content/hash.test.ts`); owner visual check "all good" (`p09-preview.ps1`, PC and phone); commit `ec44afa`; `npm audit --omit=dev` = 0; no new runtime dependency.
+- Build JS 684.27 KB gzip (budget 800 KB, Q22). Left for later: unused `fingerprint.*` / `toast.dismiss` keys in `en.json`, woff + woff2 both in `public/fonts` (P14).

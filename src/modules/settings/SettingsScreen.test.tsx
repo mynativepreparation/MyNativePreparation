@@ -8,15 +8,27 @@ describe('SettingsScreen theme selector', () => {
     localStorage.clear();
   });
 
-  it('starts on System and switches to Dark', () => {
+  it('starts on Light and has no System button any more', () => {
     render(<SettingsScreen />);
-    expect(screen.getByRole('button', { name: 'System' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Light' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('button', { name: 'System' })).toBeNull();
+  });
+
+  it('switches to Dark and then to Colour', () => {
+    render(<SettingsScreen />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Dark' }));
 
     expect(screen.getByRole('button', { name: 'Dark' })).toHaveAttribute('aria-pressed', 'true');
     expect(document.documentElement.dataset.theme).toBe('dark');
     expect(localStorage.getItem('np.theme')).toBe('dark');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Colour' }));
+
+    expect(screen.getByRole('button', { name: 'Colour' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Dark' })).toHaveAttribute('aria-pressed', 'false');
+    expect(document.documentElement.dataset.theme).toBe('colour');
+    expect(localStorage.getItem('np.theme')).toBe('colour');
   });
 });
 

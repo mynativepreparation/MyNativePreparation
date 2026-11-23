@@ -1,0 +1,51 @@
+/* The bottom bar of the course window. Tokens only. The three coloured buttons use a light tint of their own ink colour with a solid
+   border, the same recipe as the text boxes in core/content/RichStyles.css, so the dark text stays readable in light and dark mode. */
+.np-wbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-wbar__main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--np-space-3);
+}
+
+.np-wbar__main > .np-button {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.np-wbar .np-wbar__save,
+.np-wbar .np-wbar__edit,
+.np-wbar .np-wbar__publish {
+  border: 2px solid var(--np-wbar-ink);
+  background: color-mix(in srgb, var(--np-wbar-ink) 14%, var(--np-color-surface));
+  color: var(--np-color-text);
+}
+
+.np-wbar .np-wbar__save {
+  --np-wbar-ink: var(--np-color-ink-green);
+}
+
+.np-wbar .np-wbar__edit {
+  --np-wbar-ink: var(--np-color-ink-blue);
+}
+
+.np-wbar .np-wbar__publish {
+  --np-wbar-ink: var(--np-color-ink-orange);
+}
+
+.np-wbar__add {
+  align-self: stretch;
+  justify-content: center;
+}
+
+.np-wbar__note {
+  margin: 0;
+  font-size: var(--np-font-size-sm);
+  color: var(--np-color-text-muted);
+  overflow-wrap: anywhere;
+}

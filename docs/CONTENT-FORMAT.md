@@ -53,8 +53,62 @@ They must not start with `/`, and must not contain `..`, `\`, `:` or empty parts
 
 - `type` is `title`, `subtitle`, `text` or `image`. The order of the array is the display order.
 - `title`, `subtitle`, `text` need a non-empty `text`.
+- `title`, `subtitle` and `text` blocks may have an optional `font`: `sans` (the default when missing), `serif`, `humanist` or one of the 13 more fonts of P10 T11p (the full list of 16 ids with their families is in the table "Font ids" below). Any other value is an error; an `image` block must not have a `font`. Old courses without `font` stay valid and look the same.
 - `image` needs `src` (a safe path, see above) and `alt` (a string, may be empty).
+- `image` may also have `align` (`left`, `center` or `right`), `width` (a whole number, percent of the text column, 10 to 100) and `height` (a whole number, percent of the picture's natural height at that width, 10 to 300). All three are optional; a missing one means "as before" (centred, natural size, proportions kept). With `left` or `right` the next text flows beside the picture. A wrong value is an error with a path (for example `blocks[0].width`). Text blocks must not have these fields. Old courses stay valid and look the same.
 - `{ "blocks": [] }` is valid and means "not available".
+- A chapter has no field of its own: it is a `title` block plus the blocks after it, up to the next `title` block. The editor groups and joins them again without changing any ID.
+
+### Inline marks inside `text` (parsed by `src/core/content/inline.ts`)
+
+The `text` string stays plain text; these marks are read by the app when it shows the block:
+
+| You write | You get |
+|---|---|
+| `**bold**` | bold |
+| `*italic*` | italic |
+| `__underline__` | underlined |
+| `==highlight==` | highlighted |
+| a line starting with `- ` | a bullet (lines in a row make one list) |
+| `\*` `\_` `\=` `\-` `\{` `\}` `\|` `\\` | that character shown as plain text |
+
+- Marks can be combined and nested (`***both***`, `**bold with *italic* inside**`).
+- A mark opens only when the next character is not a space and closes only when the previous character is not a space, so `2 * 3 * 4` stays plain.
+- A mark that is never closed, an empty pair (`****`), a single `_` or a single `=` stays plain text. A mark never reaches into the next line.
+- Every non-empty line is its own paragraph; empty lines only separate. Both `\n` and `\r\n` work.
+- Nothing here changes the validation: a text with marks is just a non-empty string.
+
+### Styles: colour, font, size, boxes (format v1.1, DECISIONS Q26)
+
+Still plain text inside `text`; the ids come from ONE catalog, `src/core/content/richStyles.ts`.
+
+**A span** changes the look of the text inside it: `{c=red;f=serif;x=l-circle-dark;s=l|your text}`. Write the keys you need, in any order, separated by `;`, then `|`, the text, and `}`.
+
+| Key | Meaning | Ids |
+|---|---|---|
+| `c` | text colour (every colour has a light and a dark value in the app) | `red` `orange` `brown` `green` `teal` `blue` `purple` `pink` |
+| `f` | font for these words (beats the `font` of the block) | the 16 ids of "Font ids" below, for example `sans` `serif` `humanist` `inter` `kalam` |
+| `s` | text size (no `s` = normal) | `s` `l` `xl` `xxl` |
+| `x` | a box. Letter boxes draw a box around EACH letter, word boxes draw ONE box around the whole marked text | letter: `l-circle-light` `l-circle-dark` `l-square-light` `l-square-dark` `l-diamond-light` `l-diamond-dark` `l-round-light` `l-round-dark`; word: `w-box-light` `w-box-dark` `w-pill-light` `w-pill-dark` `w-dashed` `w-double` `w-underline` |
+
+**Font ids** (the same 16 ids work for the `font` of a block and for `f=` in a span; the list lives in `FONT_IDS` of `richStyles.ts` and `FONT_KINDS` of `types.ts`, `fontKinds.test.ts` keeps them equal). The font files are self-hosted woff2 files in `public/fonts/` and are downloaded only when a text uses them.
+
+| Language | Ids and families |
+|---|---|
+| Gujarati | `sans` Noto Sans Gujarati, `serif` Noto Serif Gujarati, `humanist` Hind Vadodara, `baloo-bhai` Baloo Bhai 2, `mukta-vaani` Mukta Vaani, `rasa` Rasa, `kumar-one` Kumar One (a display font, best for titles) |
+| Hindi and Sanskrit (Devanagari) | `noto-sans-devanagari` Noto Sans Devanagari, `noto-serif-devanagari` Noto Serif Devanagari, `martel` Martel, `kalam` Kalam |
+| English | `inter` Inter, `merriweather` Merriweather, `lexend` Lexend, `atkinson` Atkinson Hyperlegible, `caveat` Caveat |
+
+Every font is drawn together with Noto Sans Gujarati, so Gujarati letters still show when a text mixes scripts.
+
+**A paragraph box** is a prefix at the very start of a line: `{{x=p-dashed}}the whole line is in a box`. Ids: `p-box-light` `p-box-dark` `p-round` `p-dashed` `p-double` `p-leftbar` `p-shadow`. In front of a bullet (`{{x=p-round}}- item`) it starts a NEW list with that box; the `- ` lines after it without a prefix belong to that list.
+
+- Spans can be nested; for a key set twice the inner span wins (`{c=red|a {c=blue|b} c}`: only `b` is blue). They combine freely with the marks above, even when they overlap without nesting.
+- A span counts only when every key and id is in the catalog, no key is repeated, and a closing `}` follows. Otherwise EVERY character of it stays plain text, nothing is lost or hidden. The same holds for an empty span (`{c=red|}`), a lone `}`, an unknown paragraph-box id, and a prefix that is not at the very start of the line. A paragraph-box id is not allowed inside a span.
+- Neighbouring text with the same word box id is drawn as one box.
+- A prefix with nothing after it is dropped like an empty line.
+- New escapes: `\{`, `\}` and `\|` show the character as plain text. (Before v1.1 a backslash in front of these stayed visible; no existing course uses it.)
+- The validator does not look inside `text`, so an old app reading a v1.1 text would simply show the braces: the format only grows, it never changes the meaning of old files.
 
 ## test.json
 
@@ -95,4 +149,4 @@ Run `.\run.cmd check.ps1`. The test `sampleContent.test.ts` fails when a file is
 
 ## Where this lives in code
 
-`src/core/content/`: `types.ts` (shapes), `validate.ts` (rules, path-based error messages), `ids.ts`, `hash.ts`, `scoring.ts`, `loader.ts` (fetch + validate, never throws).
+`src/core/content/`: `types.ts` (shapes), `validate.ts` (rules, path-based error messages), `ids.ts`, `hash.ts`, `scoring.ts`, `inline.ts` (the text marks, spans and paragraph boxes), `richStyles.ts` (the catalog of style ids), `loader.ts` (fetch + validate, never throws).

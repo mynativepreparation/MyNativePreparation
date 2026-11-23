@@ -11,7 +11,7 @@
     "preview": "vite preview --host",
     "icons": "node scripts/make-icons.mjs",
     "boundaries": "node scripts/check-boundaries.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile node_modules/.cache/np/tsc.tsbuildinfo",
     "lint": "eslint .",
     "test": "vitest run",
     "check": "npm run typecheck && npm run boundaries && npm run lint && npm run test",

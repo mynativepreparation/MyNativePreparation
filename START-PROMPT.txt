@@ -1,17 +1,22 @@
 Project folder: D:\My Native Preperation (use your Filesystem tools; quote paths, they have spaces).
 Reply to the owner in Gujarati only. Code, comments and docs stay in English.
 
-Context (do not question it): the owner has several Claude accounts and switches to the next one when a session runs out of tokens. Sessions NEVER run at the same time. So any file on disk that is newer than NEXT.md is unfinished work of the previous session that was cut off. It is NOT a conflict: verify it and finish it. Never stop to ask about it.
+START (2 steps, nothing else):
+1. ONE tool_search call: query "filesystem read write edit file directory", limit 20 (this loads every Filesystem tool at once).
+2. ONE message with TWO parallel calls: list_allowed_directories + read_text_file "D:\My Native Preperation\NEXT.md".
+NEXT.md holds the state, the phase file, the exact tick/log recipe and the ONE step to do now.
+Do NOT read AGENTS.md, PROGRESS.md or the phase file unless NEXT.md says so or contradicts the disk (then trust the disk and tell me).
 
-Start (token-saving, do exactly this):
-1. tool_search "filesystem read file" once (and once for edit/write if you need them), then call list_allowed_directories once.
-2. Read AGENTS.md, then NEXT.md, then get_file_info on NEXT.md. Its modified time is T0.
-3. RECOVERY (before "Do now"): list_directory the folders named under "State on disk" in NEXT.md and the folder of the active module. A file whose modified time is later than T0 was written by the cut-off session. NEXT.md may also contain "IN PROGRESS: ..." with the intended file list. Read the head of each such file (never a file over 10 KB whole) and compare it with the phase tasks.
-   - If logs\last-run.txt is NEWER than those files and its tail says CHECK OK: the work is verified. Tick the task, add ONE Log line (say "recovered"), rewrite NEXT.md.
-   - Otherwise finish or fix the files in the smallest way, then ask me to run .\run.cmd check.ps1.
-4. Read ONLY the phase file named in NEXT.md: head 40 (tasks) + tail 6 (Log). Never read another phase file, the whole SPEC, or any file over 10 KB whole (head/tail only).
-5. Then do ONLY "Do now" in NEXT.md. Before creating a file: list_directory / get_file_info it (if it exists, read its head and continue, never recreate). Before editing an existing file: read its head (the disk may be newer than your memory). Use edit_file for small edits; put new tests in NEW files. Never delete or rewrite a file only because it looks unused. If NEXT.md contradicts the disk, trust the disk and tell me in ONE line.
-6. WRITE-AHEAD: before a task that creates or changes 2 or more files, first write "IN PROGRESS: <task> - files: a, b, c" into NEXT.md. Remove that line when the task is finished.
-7. You cannot run commands. Give me copy-paste lines (cd "D:\My Native Preperation" then .\run.cmd <script>.ps1), wait for "done", then read logs\last-run.txt (tail 40) yourself. Do not ask me to paste output.
-8. Task end: tick the box, append ONE short line to the phase Log, rewrite NEXT.md (under 20 lines).
-9. If I write "TOKENS ENDING": stop new work at once, leave every file consistent, write the Log line and NEXT.md with the exact half-done state, and tell me in Gujarati what the next session must do.
+WORK: do ONLY "Do now" in NEXT.md. Put independent reads and edits in the SAME message (parallel calls).
+Never read a file over 10 KB whole (head/tail only). Before editing an existing file read its head (the disk may be newer).
+New tests go into NEW files. Never delete or rewrite a file only because it looks unused.
+
+RUN: you cannot run commands. Give me ONE copy-paste block:
+  cd "D:\My Native Preperation"
+  .\run.cmd fast.ps1
+Then wait for "done" and read logs\last-run.txt (tail 40) yourself; do not ask me to paste output.
+(fast.ps1 checks only the changed files and switches to the full check by itself when needed. Use check.ps1 only at a phase end.)
+
+FINISH: on "FAST CHECK OK" or "CHECK OK", in ONE message make three parallel edits:
+tick the task, append ONE short Log line, rewrite NEXT.md (the recipes are in NEXT.md; keep it under 25 lines).
+If the check failed: fix only what failed.

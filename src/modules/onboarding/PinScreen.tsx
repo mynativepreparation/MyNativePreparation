@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { KeyRound } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { t, tf } from '../../core/i18n';
 import { PIN_LENGTH, unlockWithPin } from '../../core/identity/pin';
+import { afterUnlockPath, returnStateFor } from '../../core/identity/returnTo';
 import { AUTH_ROUTES } from '../../core/identity/status';
 import { Button } from '../../core/ui';
 import './PinScreen.css';
@@ -20,6 +21,9 @@ function noticeText(notice: Notice): string {
 // cleared after every try. The 12 words always work: "Use my 12 words instead" goes to Login.
 export function PinScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
+  // The address that was asked for before the lock (a deep link such as #/admin) travels in the router state.
+  const toLogin = () => navigate(AUTH_ROUTES.login, { state: returnStateFor(location.state, location.pathname) });
   const [pin, setPin] = useState('');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -34,11 +38,11 @@ export function PinScreen() {
     try {
       const result = await unlockWithPin(pin);
       if (result.status === 'ok') {
-        navigate(AUTH_ROUTES.home);
+        navigate(afterUnlockPath(location.state));
         return;
       }
       if (result.status === 'no_pin') {
-        navigate(AUTH_ROUTES.login);
+        toLogin();
         return;
       }
       if (result.status === 'invalid_pin') setNotice({ kind: 'invalid' });
@@ -99,7 +103,7 @@ export function PinScreen() {
               {busy ? t('pin.enter.checking') : t('pin.enter.button')}
             </Button>
           )}
-          <Button variant="secondary" disabled={busy} onClick={() => navigate(AUTH_ROUTES.login)}>
+          <Button variant="secondary" disabled={busy} onClick={toLogin}>
             {t('pin.enter.useWords')}
           </Button>
         </div>

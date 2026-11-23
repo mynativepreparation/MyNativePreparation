@@ -24,7 +24,8 @@
   z-index: 10;
   padding-bottom: env(safe-area-inset-bottom);
   border-top: 1px solid var(--np-color-border);
-  background: var(--np-color-surface);
+  background: var(--np-nav-bg, var(--np-color-surface));
+  color: var(--np-nav-fg, var(--np-color-text));
   box-shadow: var(--np-shadow-raised);
   transition:
     background-color var(--np-motion-medium) var(--np-ease),

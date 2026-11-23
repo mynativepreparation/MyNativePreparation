@@ -1,0 +1,51 @@
+.np-richbox {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: calc(var(--np-touch) * 2);
+  padding: var(--np-space-3) var(--np-space-4);
+  border: 1px solid var(--np-color-border);
+  border-radius: var(--np-radius-sm);
+  background: var(--np-color-surface);
+  color: var(--np-color-text);
+  box-shadow: var(--np-shadow-inset);
+  font: inherit;
+  cursor: text;
+  /* spaces stay as typed; long Gujarati / English text wraps instead of pushing the page wider */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.np-richbox--single {
+  min-height: var(--np-touch);
+}
+
+.np-richbox[contenteditable='false'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* the placeholder is drawn by CSS, so it is never part of the text and never in the selection */
+.np-richbox[data-empty='true']::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  inset-block-start: var(--np-space-3);
+  inset-inline-start: var(--np-space-4);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.np-richbox__line {
+  min-height: 1.4em;
+}
+
+.np-richbox__line[data-bullet='true'] {
+  position: relative;
+  padding-inline-start: 1.5em;
+}
+
+.np-richbox__line[data-bullet='true']::before {
+  content: '\2022';
+  position: absolute;
+  inset-inline-start: 0.4em;
+}

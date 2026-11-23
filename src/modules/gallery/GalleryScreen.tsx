@@ -6,7 +6,7 @@ import { Button, Card, IconButton, ProgressBar, StarRating, Surface, TextField, 
 import { wire } from '../../core/wire/wire';
 import './GalleryScreen.css';
 
-const MODES: ThemeMode[] = ['system', 'light', 'dark'];
+const MODES: ThemeMode[] = ['light', 'dark', 'colour'];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (

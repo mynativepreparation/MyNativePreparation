@@ -1,0 +1,45 @@
+.np-published {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--np-space-3);
+  min-width: 0;
+}
+
+.np-published__title {
+  margin: 0;
+}
+
+.np-published__text {
+  margin: 0;
+  /* long Gujarati / English text wraps instead of pushing the page wider */
+  overflow-wrap: anywhere;
+}
+
+.np-published__error {
+  font-weight: 600;
+}
+
+.np-published__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+  width: 100%;
+}
+
+.np-published__card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--np-space-3);
+}
+
+.np-published__name {
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}

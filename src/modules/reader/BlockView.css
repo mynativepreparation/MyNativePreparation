@@ -1,42 +1,182 @@
-/* Reader blocks (P06 T3). Sizes are in em so the whole text follows the reader's font scale. */
+/* Reader blocks (P06 T3, P10 T11k). Sizes are in em so the whole text follows the reader's font scale.
+   The blocks are laid out as normal flow (not flex) because a picture can FLOAT left or right and the next text must flow beside it;
+   the container is a flow-root, so floats never leak out of it. The colour / size / box classes live in RichStyles.css. */
 .np-blocks {
-  display: flex;
-  flex-direction: column;
-  gap: var(--np-space-3);
+  display: flow-root;
   min-width: 0;
   overflow-wrap: anywhere;
   line-height: 1.6;
 }
 
+/* the space between two blocks (it was the flex gap before) */
+.np-blocks > * + * {
+  margin-top: var(--np-space-3);
+}
+
+/* text that follows a floated picture starts level with the picture */
+.np-block-figure--left + *,
+.np-block-figure--right + * {
+  margin-top: 0;
+}
+
+/* a title or subtitle starts a new part: it moves below any floated picture above it */
 .np-block-title {
-  margin: var(--np-space-3) 0 0;
+  clear: both;
+  margin: var(--np-space-5) 0 0;
   font-size: 1.5em;
   line-height: 1.3;
   color: var(--np-color-text);
 }
 
 .np-block-subtitle {
-  margin: var(--np-space-2) 0 0;
+  clear: both;
+  margin: calc(var(--np-space-3) + var(--np-space-2)) 0 0;
   font-size: 1.2em;
   line-height: 1.35;
   color: var(--np-color-text);
 }
 
 .np-block-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--np-space-2);
+  display: block;
   color: var(--np-color-text);
 }
 
 .np-block-text > p {
-  margin: 0;
+  margin: 0 0 var(--np-space-2);
   white-space: pre-line; /* single line breaks are kept */
 }
 
+/* inline marks: bold, italic and underline come from the browser; the highlight is a soft tint of the star colour (works in light and dark, the text colour stays the normal one) */
+.np-block-text strong {
+  font-weight: 700;
+}
+
+.np-mark {
+  padding: 0 0.1em;
+  border-radius: 0.2em;
+  background: color-mix(in srgb, var(--np-color-star) 35%, transparent);
+  color: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* bullet list: the bullet is a real list marker, so it also reads as a list; a flow-root list sits beside a floated picture as one block */
+.np-block-text > .np-block-list {
+  display: flow-root;
+  margin: 0 0 var(--np-space-2);
+  padding-inline-start: var(--np-space-5);
+}
+
+.np-block-list > li {
+  min-width: 0;
+  white-space: pre-line;
+}
+
+.np-block-list > li + li {
+  margin-top: var(--np-space-1);
+}
+
+/* the last paragraph or list of a text block has no extra space under it (the blocks already have their own gap) */
+.np-block-text > :last-child {
+  margin-bottom: 0;
+}
+
+/* font types the developer can choose per block or per span (DECISIONS Q25) */
+.np-font-sans {
+  font-family: 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-serif {
+  font-family: 'Noto Serif Gujarati', serif;
+}
+
+.np-font-humanist {
+  font-family: 'Hind Vadodara', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+/* P10 T11p: 13 more families (files in public/fonts, @font-face in core/ui/fonts.css). EVERY stack contains 'Noto Sans Gujarati', so Gujarati
+   letters still show when a text mixes scripts inside a Latin or Devanagari family (fontStacks.test.ts proves it). */
+.np-font-baloo-bhai {
+  font-family: 'Baloo Bhai 2', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-mukta-vaani {
+  font-family: 'Mukta Vaani', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-rasa {
+  font-family: 'Rasa', 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+
+.np-font-kumar-one {
+  font-family: 'Kumar One', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-noto-sans-devanagari {
+  font-family: 'Noto Sans Devanagari', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-noto-serif-devanagari {
+  font-family: 'Noto Serif Devanagari', 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+
+.np-font-martel {
+  font-family: 'Martel', 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+
+.np-font-kalam {
+  font-family: 'Kalam', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-inter {
+  font-family: 'Inter', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-merriweather {
+  font-family: 'Merriweather', 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+
+.np-font-lexend {
+  font-family: 'Lexend', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-atkinson {
+  font-family: 'Atkinson Hyperlegible', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+.np-font-caveat {
+  font-family: 'Caveat', 'Noto Sans Gujarati', var(--np-font-sans);
+}
+
+/* pictures: centred by default; left / right float so the next text flows beside them; the inline width is a share of the column */
 .np-block-figure {
   margin: 0;
   min-width: 0;
+  max-width: 100%;
+}
+
+.np-block-figure--center {
+  clear: both;
+  margin-inline: auto;
+}
+
+.np-block-figure--left {
+  float: left;
+  margin: 0 var(--np-space-3) var(--np-space-2) 0;
+}
+
+.np-block-figure--right {
+  float: right;
+  margin: 0 0 var(--np-space-2) var(--np-space-3);
+}
+
+/* on a very narrow screen a floated picture would leave no room for text: it becomes a full-width centred picture */
+@media (max-width: 420px) {
+  .np-block-figure--left,
+  .np-block-figure--right {
+    float: none;
+    margin: 0 auto;
+  }
 }
 
 .np-block-img-button {
@@ -62,4 +202,15 @@
   height: auto;
   margin: 0 auto;
   border-radius: var(--np-radius-md);
+}
+
+/* the developer gave a width: the picture fills its figure */
+.np-block-img--fill {
+  width: 100%;
+}
+
+/* the developer gave a height (percent of the natural height): --np-img-aspect is set once the picture is loaded */
+.np-block-img--stretched {
+  aspect-ratio: var(--np-img-aspect);
+  object-fit: fill;
 }

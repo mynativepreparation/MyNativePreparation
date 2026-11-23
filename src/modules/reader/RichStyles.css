@@ -1,0 +1,3 @@
+/* The rich text styles moved to core/content/RichStyles.css (P10 T11n C1), because the Admin window draws them too and
+   modules may not import each other. This line keeps every old import of this file working; delete the file once nothing imports it. */
+@import '../../core/content/RichStyles.css';

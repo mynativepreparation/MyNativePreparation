@@ -1,0 +1,7 @@
+/* The Settings panel of the course window: the course boxes and the cover, one under the other. */
+.np-csettings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+  min-width: 0;
+}

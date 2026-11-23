@@ -1,0 +1,25 @@
+.np-admin-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-4);
+}
+
+.np-admin-home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-admin-home__text,
+.np-admin-home__warn {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.np-admin-home__warn {
+  font-weight: 600;
+}
+
+.np-admin-home .np-button {
+  align-self: flex-start;
+}

@@ -20,8 +20,8 @@
 }
 
 .np-button--primary {
-  background: var(--np-color-accent);
-  color: var(--np-color-on-accent);
+  background: var(--np-color-fill);
+  color: var(--np-color-on-fill);
   border: 1px solid var(--np-color-accent);
 }
 
