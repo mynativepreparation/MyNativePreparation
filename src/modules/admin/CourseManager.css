@@ -20,6 +20,19 @@
   font-weight: 600;
 }
 
+/* Publish / Unpublish result: one line, optional commit id and up to three problems, then Close (P11 T5b) */
+.np-courses__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--np-space-3);
+}
+
+.np-courses__problems {
+  margin: 0;
+  padding-left: var(--np-space-3);
+  overflow-wrap: anywhere;
+}
+
 .np-courses__list {
   list-style: none;
   margin: 0;

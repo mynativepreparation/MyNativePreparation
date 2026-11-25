@@ -7,4 +7,4 @@ Exam-preparation app for students and teachers: read, practice, test. Local-firs
 - Check everything: `npm run check` (types, module boundaries, lint, tests).
 - Build: `powershell -ExecutionPolicy Bypass -File scripts\build.ps1` (keeps only the newest build in `builds\`).
 - Project plan and decisions: `PROGRESS.md`, `AGENTS.md`, `docs/`.
-- License: MIT.
+- License: Apache-2.0.

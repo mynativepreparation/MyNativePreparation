@@ -1,9 +1,10 @@
 import { BookOpen, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { contentUrl } from '../../core/content/loader';
-import { t } from '../../core/i18n';
+import { t, tf } from '../../core/i18n';
 import { Button, Card, Surface } from '../../core/ui';
 import { NotAvailable } from './NotAvailable';
+import { useContentSync } from './useContentSync';
 import { useCourses, type CourseEntry } from './useCourses';
 import './HomeScreen.css';
 
@@ -45,12 +46,23 @@ function CourseTile({ entry, onOpen }: { entry: CourseEntry; onOpen: () => void 
 
 export function HomeScreen() {
   const navigate = useNavigate();
-  const { state, retry } = useCourses();
+  const { state, retry, refresh } = useCourses();
+  // P11 T8c: a calm note when the server has new or updated courses (the list is reloaded by itself).
+  const { note, dismiss } = useContentSync(refresh);
 
   return (
     <section className="np-home">
       <h1>{t('home.title')}</h1>
       <p className="np-home__intro">{t('home.intro')}</p>
+
+      {note !== null && (
+        <div className="np-home__news" role="status">
+          <p className="np-home__news-text">{tf('home.news', { count: note.count })}</p>
+          <Button variant="secondary" onClick={dismiss}>
+            {t('home.news.dismiss')}
+          </Button>
+        </div>
+      )}
 
       {state.status === 'loading' && (
         <>

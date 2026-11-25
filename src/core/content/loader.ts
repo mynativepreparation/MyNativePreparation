@@ -1,3 +1,4 @@
+import { CONTENT_BASE } from './config';
 import { isId } from './ids';
 import { LEGACY_TEST_FILE, testFilesOf, testIdFromPath } from './testFiles';
 import type {
@@ -34,7 +35,7 @@ type Fetched =
 
 /** URL of a file under the content root, e.g. `manifest.json` or `courses/<id>/course.json`. */
 export function contentUrl(path: string): string {
-  return `${import.meta.env.BASE_URL}content/${path}`;
+  return `${CONTENT_BASE}${path}`;
 }
 
 async function fetchJson(path: string): Promise<Fetched> {

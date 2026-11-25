@@ -47,12 +47,12 @@ describe('AboutCard: app and version', () => {
 });
 
 describe('AboutCard: licence', () => {
-  it('says MIT licence, free and open source, and the project really is MIT', () => {
+  it('says Apache-2.0 licence, free and open source, and the project really is Apache-2.0', () => {
     render(<AboutCard />);
     expect(screen.getByText(t('about.licence'))).toBeInTheDocument();
-    expect(t('about.licence')).toContain('MIT');
-    expect(pkg.license).toBe('MIT');
-    expect(readFileSync('LICENSE', 'utf8')).toContain('MIT');
+    expect(t('about.licence')).toContain('Apache-2.0');
+    expect(pkg.license).toBe('Apache-2.0');
+    expect(readFileSync('LICENSE', 'utf8')).toContain('Apache License');
   });
 });
 

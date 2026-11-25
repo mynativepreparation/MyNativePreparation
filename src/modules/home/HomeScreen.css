@@ -102,6 +102,24 @@
   margin: 0;
 }
 
+/* the calm "new or updated courses" line (P11 T8c): text first, a Dismiss button after it, wraps on a 360 px phone */
+.np-home__news {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--np-space-3);
+  padding: var(--np-space-3) var(--np-space-4);
+  border-radius: var(--np-radius-md);
+  background: var(--np-color-surface);
+  box-shadow: var(--np-shadow-raised-sm);
+}
+
+.np-home__news-text {
+  flex: 1 1 12rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 /* text for screen readers only */
 .np-home__sr {
   position: absolute;

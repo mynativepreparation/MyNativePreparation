@@ -55,6 +55,8 @@ export interface CourseWorkspaceProps {
   draft: CourseDraft;
   busy: boolean;
   onSave: (draft: CourseDraft) => void;
+  /** Publish the course of the window (P11 T5b): the same checks as Save, then the draft goes up. Left out = Publish stays off. */
+  onPublish?: (draft: CourseDraft) => void;
   onCancel: () => void;
   /** Tests pass a fake; the browser version is the default of the cover and test editors. */
   encodeWebp?: WebpEncoder;
@@ -106,7 +108,7 @@ function mergeProblems(first: Problem[], rest: Problem[]): Problem[] {
   return [...first, ...rest.filter((problem) => !keys.has(problem.key))];
 }
 
-export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: CourseWorkspaceProps) {
+export function CourseWorkspace({ draft, busy, onSave, onPublish, onCancel, encodeWebp }: CourseWorkspaceProps) {
   const [fields, setFields] = useState<CourseFields>(() => fieldsFromCourse(draft.course));
   const [fieldErrors, setFieldErrors] = useState<CourseFieldErrors>(NO_FIELD_ERRORS);
   const [cover, setCover] = useState<string | undefined>(draft.course.cover);
@@ -225,7 +227,8 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
     if (result.shrunk) setPictureNote(t('admin.blocks.shrunk'));
   }
 
-  function save() {
+  /** The draft as it is in the window, or null (and the friendly list of what to fix) when it is not valid. Save and Publish share it. */
+  function collect(): CourseDraft | null {
     const checked = checkCourseFields(fields);
     const errors = checked.ok ? NO_FIELD_ERRORS : checked.errors;
     setFieldErrors(errors);
@@ -244,7 +247,17 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
     const found = summarizeProblems(final);
     const listed = checked.ok ? found : mergeProblems(fieldProblems(errors), found);
     setProblems(listed);
-    if (listed.length === 0) onSave(final);
+    return listed.length === 0 ? final : null;
+  }
+
+  function save() {
+    const ready = collect();
+    if (ready !== null) onSave(ready);
+  }
+
+  function publishNow() {
+    const ready = collect();
+    if (ready !== null && onPublish !== undefined) onPublish(ready);
   }
 
   const settings: ReactNode = (
@@ -346,6 +359,7 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
   // Edit and Add chapter belong to the parts that have chapters; the Test part leaves them out.
   const chapterActions =
     chapterPart === null ? {} : { onAddChapter: addChapter, onToggleEdit: () => setListOpen((open) => !open), editOpen: listOpen };
+  const publishAction = onPublish === undefined ? {} : { onPublish: publishNow };
 
   return (
     <div className="np-workspace">
@@ -364,7 +378,7 @@ export function CourseWorkspace({ draft, busy, onSave, onCancel, encodeWebp }: C
       </div>
       <div className="np-workspace__main">{main}</div>
       <ProblemSummary problems={problems} />
-      <WindowBar busy={busy} onSave={save} onCancel={onCancel} {...chapterActions} />
+      <WindowBar busy={busy} onSave={save} onCancel={onCancel} {...chapterActions} {...publishAction} />
     </div>
   );
 }

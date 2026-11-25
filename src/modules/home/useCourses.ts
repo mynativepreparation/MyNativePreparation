@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadCourse, loadManifest } from '../../core/content/loader';
 import type { CourseCard } from '../../core/content/types';
 
@@ -55,9 +55,17 @@ async function readCourses(): Promise<CoursesState> {
   }
 }
 
-export function useCourses(): { state: CoursesState; retry: () => void } {
+export function useCourses(): { state: CoursesState; retry: () => void; refresh: () => Promise<boolean> } {
   const [state, setState] = useState<CoursesState>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  const alive = useRef(true);
+
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,5 +82,16 @@ export function useCourses(): { state: CoursesState; retry: () => void } {
     setAttempt((n) => n + 1);
   }, []);
 
-  return { state, retry };
+  /**
+   * Loads the list again WITHOUT the loading skeleton (P11 T8c: the content changed on the server). A list that arrives replaces the
+   * old one and the answer is `true`; a failure (offline, broken manifest) keeps the list that is shown and the answer is `false`.
+   */
+  const refresh = useCallback(async (): Promise<boolean> => {
+    const result = await readCourses();
+    if (!alive.current || result.status === 'error') return false;
+    setState(result);
+    return true;
+  }, []);
+
+  return { state, retry, refresh };
 }

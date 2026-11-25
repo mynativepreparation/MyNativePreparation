@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { ClipboardList, EyeOff, Pencil, Plus, RotateCcw, Trash2, Upload } from 'lucide-react';
 import type { DraftRecord, DraftStore, StoreCode } from '../../core/admin/draftStore';
 import { createCourseDraft, type CourseDraft } from '../../core/admin/model';
@@ -8,16 +8,20 @@ import { t, tf, type TextKey } from '../../core/i18n';
 import { Button, Card } from '../../core/ui';
 import { CourseWorkspace } from './CourseWorkspace';
 import { PublishedCourses } from './PublishedCourses';
+import { PublishConfirm, PublishResult } from './PublishPanel';
 import { TestManager } from './TestManager';
 import { TestWindow } from './TestWindow';
+import { getInfo, subscribe } from './session';
 import { testName } from './testName';
+import { usePublish, type UsePublishDeps } from './usePublish';
 import './CourseManager.css';
 
 // Course list + course form (P10 T6, SPEC D2/D5). The list comes from the draft store (drafts kept in this browser).
 // "Add another course" opens a NEW, UNSAVED draft: nothing is stored until Save, so Cancel leaves no empty course behind.
 // Storage problems are shown as friendly texts (codes -> en.json), never as raw errors.
 // Owner layout (DECISIONS Q26): the Add button is at the very TOP, the courses are listed below it, each with Edit, Delete, Publish and
-// Unpublish. Publish / Unpublish write to GitHub (P11), so until then they are shown but OFF, with one note.
+// Unpublish. Publish / Unpublish write to GitHub (P11 T5b): they are ON when the owner is logged in and nothing is running. Each one asks
+// first ("this goes live for everyone"); the run and its result line come from `usePublish`. Logged out they stay OFF, with one note.
 
 const PUBLISH_NOTE_ID = 'np-courses-publish-note';
 
@@ -31,6 +35,15 @@ interface Editing {
   isNew: boolean;
 }
 
+/** The open "really go live?" question: Publish carries the draft to send, Unpublish only the course. */
+type Pending =
+  | { kind: 'publish'; draft: CourseDraft; title: string }
+  | { kind: 'unpublish'; courseId: string; title: string };
+
+const pendingId = (pending: Pending): string => (pending.kind === 'publish' ? pending.draft.course.id : pending.courseId);
+
+const titleOf = (draft: CourseDraft): string => (draft.course.title.trim() === '' ? t('admin.courses.untitled') : draft.course.title);
+
 function ErrorLine({ text }: { text: TextKey }) {
   return (
     <p role="alert" className="np-courses__error">
@@ -40,7 +53,7 @@ function ErrorLine({ text }: { text: TextKey }) {
   );
 }
 
-export function CourseManager({ store }: { store: DraftStore }) {
+export function CourseManager({ store, publishDeps }: { store: DraftStore; publishDeps?: UsePublishDeps | undefined }) {
   const [records, setRecords] = useState<DraftRecord[] | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [editing, setEditing] = useState<Editing | null>(null);
@@ -55,6 +68,11 @@ export function CourseManager({ store }: { store: DraftStore }) {
   // The test window (T11t): which test is open (`null` = a new one). `key` is new for every opening, so a new test starts empty.
   const [testWindow, setTestWindow] = useState<{ testId: string | null; key: number } | null>(null);
   const windowCount = useRef(0);
+  // Publish / Unpublish (P11 T5b): `pending` is the question that is open; the run itself and its result come from `usePublish`.
+  const info = useSyncExternalStore(subscribe, getInfo);
+  const pub = usePublish(publishDeps);
+  const [pending, setPending] = useState<Pending | null>(null);
+  const canPublish = info !== null && !busy && !pub.busy;
 
   useEffect(() => {
     let cancelled = false;
@@ -80,6 +98,7 @@ export function CourseManager({ store }: { store: DraftStore }) {
   }
 
   function onEdit(record: DraftRecord) {
+    setPending(null);
     setSaved(false);
     setError(null);
     setEditing({ draft: record.draft, isNew: false });
@@ -200,6 +219,25 @@ export function CourseManager({ store }: { store: DraftStore }) {
     }
   }
 
+  function askPublish(draft: CourseDraft) {
+    pub.reset();
+    setPending({ kind: 'publish', draft, title: titleOf(draft) });
+  }
+
+  function askUnpublish(record: DraftRecord) {
+    pub.reset();
+    setPending({ kind: 'unpublish', courseId: record.id, title: titleOf(record.draft) });
+  }
+
+  /** Yes on the question: the run starts and its progress shows in the result line. */
+  function confirmPending() {
+    if (pending === null || pub.busy) return;
+    const question = pending;
+    setPending(null);
+    if (question.kind === 'publish') void pub.publish(question.draft);
+    else void pub.unpublish({ courseId: question.courseId, title: question.title });
+  }
+
   if (testsOf !== null && testWindow !== null) {
     return (
       <TestWindow
@@ -234,18 +272,31 @@ export function CourseManager({ store }: { store: DraftStore }) {
       <section className="np-courses">
         <h2 className="np-courses__title">{t(editing.isNew ? 'admin.course.newTitle' : 'admin.course.editTitle')}</h2>
         {error !== null && <ErrorLine text={error} />}
+        {pending !== null && pendingId(pending) === editing.draft.course.id && (
+          <PublishConfirm
+            kind={pending.kind}
+            title={pending.title}
+            busy={pub.busy}
+            onConfirm={confirmPending}
+            onCancel={() => setPending(null)}
+          />
+        )}
+        <PublishResult state={pub.state} onClose={pub.reset} />
         <CourseWorkspace
           key={editing.draft.course.id}
           draft={editing.draft}
-          busy={busy}
+          busy={busy || pub.busy}
           onSave={(draft) => void onSave(draft)}
           onCancel={onCancel}
+          {...(info === null ? {} : { onPublish: askPublish })}
         />
       </section>
     );
   }
 
   const hasCourses = records !== null && records.length > 0;
+  // Logged out, the two buttons are off and point to the note.
+  const describedBy = info === null ? { 'aria-describedby': PUBLISH_NOTE_ID } : {};
   return (
     <section className="np-courses">
       <h2 className="np-courses__title">{t('admin.courses.title')}</h2>
@@ -263,6 +314,7 @@ export function CourseManager({ store }: { store: DraftStore }) {
         </p>
       )}
       {error !== null && <ErrorLine text={error} />}
+      <PublishResult state={pub.state} onClose={pub.reset} />
       {records === null && (
         <p role="status" className="np-courses__text">
           {t('admin.courses.loading')}
@@ -290,7 +342,15 @@ export function CourseManager({ store }: { store: DraftStore }) {
                       </span>
                     )}
                   </div>
-                  {confirmId === record.id ? (
+                  {pending !== null && pendingId(pending) === record.id ? (
+                    <PublishConfirm
+                      kind={pending.kind}
+                      title={pending.title}
+                      busy={pub.busy}
+                      onConfirm={confirmPending}
+                      onCancel={() => setPending(null)}
+                    />
+                  ) : confirmId === record.id ? (
                     <div className="np-courses__confirm" role="group" aria-label={tf('admin.courses.confirmLabel', { title })}>
                       <p className="np-courses__text">{tf('admin.courses.confirmText', { title })}</p>
                       <div className="np-courses__actions" data-np-check>
@@ -347,8 +407,9 @@ export function CourseManager({ store }: { store: DraftStore }) {
                         variant="secondary"
                         icon={<Upload size={20} aria-hidden="true" />}
                         aria-label={tf('admin.courses.publishNamed', { title })}
-                        aria-describedby={PUBLISH_NOTE_ID}
-                        disabled
+                        {...describedBy}
+                        disabled={!canPublish}
+                        onClick={() => askPublish(record.draft)}
                       >
                         {t('admin.courses.publish')}
                       </Button>
@@ -356,8 +417,9 @@ export function CourseManager({ store }: { store: DraftStore }) {
                         variant="secondary"
                         icon={<EyeOff size={20} aria-hidden="true" />}
                         aria-label={tf('admin.courses.unpublishNamed', { title })}
-                        aria-describedby={PUBLISH_NOTE_ID}
-                        disabled
+                        {...describedBy}
+                        disabled={!canPublish}
+                        onClick={() => askUnpublish(record)}
                       >
                         {t('admin.courses.unpublish')}
                       </Button>
@@ -369,7 +431,7 @@ export function CourseManager({ store }: { store: DraftStore }) {
           })}
         </ul>
       )}
-      {hasCourses && (
+      {hasCourses && info === null && (
         <p id={PUBLISH_NOTE_ID} className="np-courses__text">
           {t('admin.courses.publishNote')}
         </p>

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import pkg from './package.json';
 
-// VITE_BASE is '/my-native-preparation/' when deployed to GitHub Pages, '/' otherwise.
+// VITE_BASE is '/MyNativePreparation/' when deployed to GitHub Pages (set by .github/workflows/pages.yml), '/' otherwise.
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
   // The app version for the About card (P09): one source, package.json. Vitest reads this config too, so tests see it as well.
@@ -22,6 +22,31 @@ export default defineConfig({
             urlPattern: ({ url }) => url.pathname.endsWith('.woff2'),
             handler: 'CacheFirst',
             options: { cacheName: 'np-fonts', expiration: { maxEntries: 120 }, cacheableResponse: { statuses: [0, 200] } },
+          },
+          // The published course files (P11 T8a). They are NOT precached (see globPatterns), so a new or changed course never needs an app update;
+          // a course that was opened once keeps working offline. The rules match the PATH part `/content/`, so they work for any VITE_BASE.
+          // Each `urlPattern` function is copied as text into the service worker: it must not use anything defined outside of it.
+          {
+            // manifest.json, course.json, overview / content / test files: fresh when there is a network (3 s), else the saved copy
+            urlPattern: ({ url }) => /\/content\/.+\.json$/.test(url.pathname),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'np-content-data',
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 300 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // A picture file name can be used again after a picture is replaced or removed, so a saved picture is shown at once
+            // (offline too) and refreshed in the background, never kept forever.
+            urlPattern: ({ url }) => /\/content\/.+\.(?:svg|webp|png|jpe?g|gif)$/.test(url.pathname),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'np-content-images',
+              expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
           },
         ],
       },

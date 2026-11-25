@@ -22,6 +22,8 @@ const ERROR_TEXT: Record<GithubErrorCode, TextKey> = {
   bad_response: 'admin.err.badResponse',
   bad_path: 'admin.err.badResponse',
   too_large: 'admin.err.badResponse',
+  // Friendly publish texts come with the Publish UI (P11 T5 / T6).
+  conflict: 'admin.err.badResponse',
 };
 
 const realFetch: GithubFetch = (url, init) => fetch(url, init);

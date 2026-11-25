@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Exam preparation app: read, practice, test. Local-first, open source.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

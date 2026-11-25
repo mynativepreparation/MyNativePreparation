@@ -5,14 +5,17 @@ import { Button } from '../../core/ui';
 import './WindowBar.css';
 
 // The bottom bar of the course window (P10 T11n step C2, owner mock-up 2026-11-22): Save (green), Edit (blue) and Publish (orange);
-// Add chapter sits under them. Publish stays off until P11 and the note says why. Edit and Add chapter belong to the parts that have
+// Add chapter sits under them. Publish is off (with a note) unless the window hands in `onPublish` (P11 T5b: the owner is logged in).
+// Edit and Add chapter belong to the parts that have
 // chapters (Overview, Content): the Test part leaves `onToggleEdit` and `onAddChapter` out and the bar shows neither.
 // The bar owns no state: the window decides what Save, Edit and Add do.
 
 export interface WindowBarProps {
-  /** True while a save is running: every button except Publish (always off for now) is off. */
+  /** True while a save or a publish is running: every button is off. */
   busy?: boolean;
   onSave: () => void;
+  /** Publish the open course (the window asks first). Left out = Publish stays off and the note says why. */
+  onPublish?: () => void;
   /** Add a chapter after the open one. Left out for the Test part. */
   onAddChapter?: () => void;
   /** Open or close the chapter list (open, move, delete). Left out for the Test part. */
@@ -22,7 +25,15 @@ export interface WindowBarProps {
   onCancel?: () => void;
 }
 
-export function WindowBar({ busy = false, onSave, onAddChapter, onToggleEdit, editOpen = false, onCancel }: WindowBarProps) {
+export function WindowBar({
+  busy = false,
+  onSave,
+  onPublish,
+  onAddChapter,
+  onToggleEdit,
+  editOpen = false,
+  onCancel,
+}: WindowBarProps) {
   const noteId = useId();
   return (
     <div className="np-wbar">
@@ -41,7 +52,12 @@ export function WindowBar({ busy = false, onSave, onAddChapter, onToggleEdit, ed
             {t('admin.window.edit')}
           </Button>
         )}
-        <Button className="np-wbar__publish" icon={<Upload size={20} aria-hidden="true" />} aria-describedby={noteId} disabled>
+        <Button
+          className="np-wbar__publish"
+          icon={<Upload size={20} aria-hidden="true" />}
+          {...(onPublish === undefined ? { 'aria-describedby': noteId } : { onClick: onPublish })}
+          disabled={onPublish === undefined || busy}
+        >
           {t('admin.window.publish')}
         </Button>
       </div>
@@ -56,9 +72,11 @@ export function WindowBar({ busy = false, onSave, onAddChapter, onToggleEdit, ed
           {t('admin.window.add')}
         </Button>
       )}
-      <p id={noteId} className="np-wbar__note">
-        {t('admin.window.publishNote')}
-      </p>
+      {onPublish === undefined && (
+        <p id={noteId} className="np-wbar__note">
+          {t('admin.window.publishNote')}
+        </p>
+      )}
       {onCancel !== undefined && (
         <Button variant="secondary" onClick={onCancel} disabled={busy}>
           {t('admin.course.cancel')}

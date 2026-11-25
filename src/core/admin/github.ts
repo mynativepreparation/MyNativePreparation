@@ -17,7 +17,8 @@ export type GithubErrorCode =
   | 'timeout'
   | 'bad_response'
   | 'bad_path'
-  | 'too_large';
+  | 'too_large'
+  | 'conflict';
 
 export interface GithubError {
   ok: false;
@@ -33,9 +34,11 @@ export interface GithubResponse {
 }
 
 export interface GithubRequestInit {
-  method: 'GET';
+  method: 'GET' | 'POST' | 'PATCH';
   headers: Record<string, string>;
   signal: AbortSignal;
+  /** JSON text for POST / PATCH (P11 T2). */
+  body?: string;
 }
 
 export type GithubFetch = (url: string, init: GithubRequestInit) => Promise<GithubResponse>;
@@ -55,11 +58,11 @@ export type ReadFileResult = { ok: true; bytes: Uint8Array; text: string } | Git
 const API = 'https://api.github.com';
 const DEFAULT_TIMEOUT_MS = 10_000;
 // GitHub tokens are letters, digits, "_" and "-" (github_pat_..., ghp_...). Anything else could break the header.
-const TOKEN_CHARS = /^[A-Za-z0-9_-]+$/;
+export const TOKEN_CHARS = /^[A-Za-z0-9_-]+$/;
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-function statusToCode(res: GithubResponse): GithubErrorCode {
+export function statusToCode(res: GithubResponse): GithubErrorCode {
   if (res.status === 401) return 'unauthorized';
   if (res.status === 429) return 'rate_limited';
   if (res.status === 403) {
@@ -111,7 +114,7 @@ async function getJson(url: string, token: string, opts: GithubOptions): Promise
   }
 }
 
-function repoUrl(): string {
+export function repoUrl(): string {
   return `${API}/repos/${encodeURIComponent(CONTENT_REPO.owner)}/${encodeURIComponent(CONTENT_REPO.name)}`;
 }
 
