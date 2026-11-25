@@ -26,7 +26,7 @@ if ($flat -notmatch 'Apache License Version 2\.0, January 2004') { Stop-Here 'LI
 Write-Host "  OK" -ForegroundColor Green
 
 Write-Host "Step 3: the work tree is clean (everything committed)?"
-$dirty = @(git status --porcelain)
+$dirty = @(git status --porcelain | Where-Object { $_ -notmatch '^\s*\S+\s+NEXT\.md$' })  # NEXT.md = the hand-off notes, never part of a release: it may stay modified
 if ($dirty.Count -gt 0) {
   $dirty | ForEach-Object { Write-Host "  $_" }
   Stop-Here 'There are uncommitted changes (listed above). Commit first (task T12), then run this again.'
@@ -35,6 +35,12 @@ Write-Host "  OK: clean" -ForegroundColor Green
 
 Write-Host "Step 4: the branch is main?"
 $branch = (git rev-parse --abbrev-ref HEAD).Trim()
+if ($branch -eq 'master' -and @(git branch --list main).Count -eq 0) {
+  Write-Host "  The branch is called 'master'; renaming it to 'main' (the deploy workflow listens to main)." -ForegroundColor Yellow
+  git branch -m master main
+  if ($LASTEXITCODE -ne 0) { Stop-Here 'git branch -m master main failed.' }
+  $branch = 'main'
+}
 if ($branch -ne 'main') { Stop-Here "You are on branch '$branch'. Switch to main first: git switch main" }
 Write-Host "  OK: main" -ForegroundColor Green
 
